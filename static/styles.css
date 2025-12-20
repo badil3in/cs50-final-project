@@ -1,0 +1,168 @@
+/* *
+{
+    outline: 1px solid tomato;
+} */
+
+:root 
+{
+    --bs-btn-border-color: var(--bs-accordion-active-bg);
+}
+
+html, body
+{
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+.grid-select
+{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 1rem;
+}
+
+.col-form-label 
+{
+    padding: calc(.375rem + var(--bs-border-width));
+}
+
+.grid-container
+{
+    display: grid;
+    grid-template-columns: 100%;
+    
+    gap: 1rem;
+}
+
+.bg-light-subtle
+{
+    background-color: #f8f9fa!important;
+}
+
+.flex-col 
+{
+    flex-direction: column;
+}
+
+.small-font 
+{
+    font-size: small;
+}
+
+.overview-container
+{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-areas:
+        "header header"
+        "main main";
+    width: 70%;
+    margin: auto;
+}
+
+.overview-container div label
+{
+    padding-left: 3rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.overview-container div label p
+{
+    margin: 0;
+}
+
+.overview-container div div
+{
+    min-height: 24px;
+}
+/* 
+.overview-container label.btn 
+{
+    border-color: var(--bs-accordion-active-bg);
+} */
+
+.grid
+{
+    display: grid;
+    grid-template-columns: 90% 10%;
+
+}
+
+.svg
+{
+    text-align: center;
+}
+/* .overview-container label div
+{
+    display: grid;
+    grid-template-columns: 90% 10%;
+
+} */
+
+
+.accordion-button 
+{
+    background-color: var(--bs-accordion-active-bg);
+}
+
+/* .accordion-body
+{
+    text-align: left;
+} */
+/* 
+.accordion-body > button
+{
+    text-align: center;
+} */
+
+.overview-container > :first-child
+{
+    grid-area: header;
+}
+
+.name-container 
+{
+    grid-area: 3 / 1 / span 1 / span 2;
+}
+
+/* #appearance 
+{
+    grid-area: 8 / 1 / span 1 / span 1;
+} */
+
+/* .overview-container .card
+{
+    grid-area: 8 / 2 / span 1 / span 1;
+}
+*/
+#save-area
+{
+    grid-area: 2 / 1 / span 1 / span 2;
+}
+
+/* .overview-hint
+{
+    grid-area: 6 / 1 / span 1 / span 2;;
+} */
+
+.grid-select select 
+{
+    width: 60%;
+}
+
+.grid-select label
+{
+    width: 40%;
+}
+
+/* .selection-container
+{
+    width: 90%;
+} */
+
+@media screen and (max-width: 1024px) {
+    .grid-container 
+    {
+        grid-template-columns: 100%;
+    }
+}

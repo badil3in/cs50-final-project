@@ -1,0 +1,160 @@
+{
+    "Elf": {
+        "Female": {
+            "firstPart": ["Neri", "Rey", "Ara", "Dey", "Elor", "Fael", "Ala", "Vaena", "Lira"],
+            "secondPart": ["wynn", "ryn", "ra", "zana", "riel", "ven", "sira", "thiel"]
+        },
+        "Male": {
+            "firstPart": ["Mira", "Fen", "Theno", "Aenu", "Eryn", "Sil", "Vael", "Lor", "Am", "Ar", "Gael"],
+            "secondPart": ["lis", "nor", "kas", "faren", "las", "vel", "thas", "rion", "mir", "dir", "roth", "thiel"]
+        },
+        "Lastname": {
+            "firstPart":["Cedar", "Nephel", "Niasto", "Menatu", "Elder", "Vanril", "Gilden", "Ilia", "Rae", "Srin"],
+            "secondPart": ["song", "mith", "dryr", "ithre", "rissa", "heart", "shee", "nethrel", "wish", "drinn", "whisper", "thanel", "shadow", "dew", "moon"]
+        }
+    },
+    "Half-Elf": {
+        "Female": {
+            "firstPart": ["Neri", "Rey", "Ara", "Dey", "Elor", "Fael", "Ala", "Vaena", "Lira"],
+            "secondPart": ["mythe", "diane", "ra", "zana", "bellis", "ven", "sira", "koris"]
+        },
+        "Male": {
+            "firstPart": ["Mira", "Fen", "Theno", "Aenu", "Eryn", "Sil", "Vael", "Lor"],
+            "secondPart": ["lis", "nor", "kas", "phanis", "xian", "vel", "thas", "rion", "mir", "koris"]
+        }, 
+        "Lastname": {
+            "firstPart":["Cedar", "Nephel", "Niasto", "Menatu", "Elder", "Vanril", "Gilden", "Ilia", "Rae", "Srin","Will", "Lang", "Ray", "Ros", "Whit", "Hell", "Stan", "Rune", "Ember", "Oak", "Nickle", "Deep"],
+            "secondPart": ["song", "mith", "dryr", "ithre", "rissa", "heart", "shee", "nethrel", "wish", "drinn", "whisper", "thanel", "shadow", "dew", "moon", "wood", "ward", "strider", "tin", "ghast", "ton", "zel", "field", "bert", "ridge", "mourn", "ford", "son"]
+        }
+
+    },
+    "Dwarf": {
+        "Female": {
+            "firstPart": ["Tor", "Bryll", "Sol", "Ing", "Hild", "Sig", "Helg", "Vala", "Sigr", "Krym"],
+            "secondPart": ["mura", "delle", "dora", "runna", "myla", "mora", "nys", "dora"]
+        },
+        "Male": {
+            "firstPart": ["Thy", "Brom", "Dal", "Baer", "Grum", "Kar", "Brok", "Ruri", "Thor"],
+            "secondPart": ["grum", "gus", "mor", "rigg", "um", "gak", "gin", "kor", "mir", "dyl"]
+        },
+        "Lastname": {
+            "firstPart":["True", "Groll", "Bran", "Molten", "Grim", "Copper", "Melbru", "Dom", "Full", "Gold"],
+            "secondPart": ["storm", "brow", "hammer", "mantle", "might", "nack", "hand", "dunog", "donn", "heart", "vunn", "hivurr"]
+        }
+    },
+    "Human": {
+        "Female": {
+            "firstPart": ["Cora", "Ada", "Den", "Nico", "San", "Ade", "Bea", "Rosa", "Jo", "Jeni", "Ida", "Este", "Laure"],
+            "secondPart": ["lie", "nise", "la", "line", "", "laine", "freda", "nina", "donna", "fania"]
+        },
+        "Male": {
+            "firstPart": ["Jero", "Ben", "Valde", "Yan", "Wes", "Alan", "Edi", "Ivo", "Bron", "Theodo", "Nico", "Ludo"],
+            "secondPart": ["ley", "sar", "co", "", "zo", "mar", "rick", "bald", "wick"]
+        },
+        "Lastname": {
+            "firstPart":["Will", "Lang", "Ray", "Ros", "Whit", "Hell", "Stan", "Rune", "Ember", "Oak", "Nickle", "Deep"],
+            "secondPart": ["wood", "ward", "strider", "tin", "ghast", "ton", "zel", "field", "bert", "ridge", "mourn", "ford", "son"]
+        }
+    },
+    "Gnome": {
+        "Male": {
+            "firstPart": ["Bri", "Zin", "Cor", "Dro", "Pipp", "Fen", "Quen", "Jani"],
+            "secondPart": ["wick", "dor", "nock", "bert", "rix", "bozz", "nell", "quill"]
+        },
+        "Female": {
+            "firstPart": ["Lilli", "El", "Viri", "Tavi", "Nib", "Fira", "Sanni", "Kira", "Ori"],
+            "secondPart": ["doodle", "fizzle", "wickle", "nell", "wop", "rina", "mira"]
+        },
+        "Lastname": {
+            "firstPart":["Waggle", "Rubble", "Flicker", "Ziffiz", "Thistle", "Buckle", "Seckle", "Nafi", "Ommi", "Lucky", "Twin", "Tungo"],
+            "secondPart": ["backle", "gutedan", "pepple", "pockle", "bomp", "badol", "stitch", "bimple", "seck", "lefeple", "besi", ""]
+        }
+
+    },
+    "Goliath": {
+        "Male": {
+            "firstPart": ["Akun", "Dorn", "Keth", "Lok", "Mor", "Varn", "Thok", "Ruk"],
+            "secondPart": ["ak", "irn", "uth", "og", "an", "ath", "ek", "ar"]
+        },
+        "Female": {
+            "firstPart": ["Anra", "Koru", "Mala", "Pe", "Lora", "Tava", "Vira", "Sora"],
+            "secondPart": ["dra", "thu", "thra", "mi", "sha", "va", "rin", "la", "laki", "pu"]
+        },        
+        "Lastname": {
+            "firstPart":["Munaka", "Nalaku", "Apuna", "Kulumi", "Mothalu", "Vaimei"],
+            "secondPart": ["valathi", "kume", "nigo", "olupine", "inulelo", "kiage", "miaga", "kavea", "kavi"]
+        }
+
+    },
+    "Halfling": {
+        "Male": {
+            "firstPart": ["Albi", "Bodo", "Corin", "Derry", "Lando", "Milo", "Perri", "Tobin"],
+            "secondPart": ["", "bert", "bar", "wick", "well", "merr", "kin", "son"]
+        },
+        "Female": {
+            "firstPart": ["Amara", "Belba", "Nessa", "Rosa", "Cora", "Elly", "Lila", "Elisa"],
+            "secondPart": ["belle", "thia", "", "lyn", "waen", "thel", "ly", "ros"]
+        },
+        "Lastname": {
+            "firstPart":["Good", "Rose", "Apple", "Fore", "Marble", "Tea", "Autumn", "Quick", "Leaf"],
+            "secondPart": ["finger", "blossom", "braid", "cheeks", "brush", "borough", "creek", "topple", "surge"]
+        }
+
+    },
+    "Tiefling": {
+        "Male": {
+            "firstPart": ["Azar", "Malek", "Voren", "Zeth", "Draz", "Tham", "Korin", "Riven"],
+            "secondPart": ["", "os", "ith", "or", "an", "ar", "uth", "en", "ir", "az"]
+        },
+        "Female": {
+            "firstPart": ["Seris", "Lyra", "Thessa", "Veyra", "Zaria", "Kaena", "Miris", "Nysa", "Saphi"],
+            "secondPart": ["ven", "ki", "", "rei", "firith", "punith", "valypsis", "za", "maza"]
+        }, 
+        "Lastname": {
+            "firstPart":[""],
+            "secondPart": [""]
+        }
+    },
+    "Half-Orc": {
+        "Female": {
+            "firstPart": ["Tor", "Sam", "Ras", "Rohka", "Kuti", "Ooto", "Raha", "Umo", "Sunu"],
+            "secondPart": ["mur", "sha", "gume", "tome", "besh", "tah", "rook", "ogri"]
+        },
+        "Male": {
+            "firstPart": ["Ugu", "Sug", "Uk", "Oku", "Grum", "Kra", "Thuru", "Hoga", "Mok"],
+            "secondPart": ["bash", "gul", "ruk", "gur", "rask", "bak", "gak", "gall", "moz"]
+        }, 
+        "Lastname": {
+            "firstPart":[""],
+            "secondPart": [""]
+        }
+    },
+    "Dragonborn": {
+        "Female": {
+            "firstPart": ["Multur", "Shirni", "Ciam", "Yis", "Thastia", "Imbic", "Am", "Ferja", "Alranda"],
+            "secondPart": ["phidis", "inual", "athis", "moth", "tika", "duuja", "xaatar", "thillin"]
+        },
+        "Male": {
+            "firstPart": ["Shel", "Thartha", "Dipesh", "Meth", "Daal", "Nyon", "Furden", "Mirrhesh", "Cem"],
+            "secondPart": ["hocmar", "pharak", "drash", "siirax", "kijuul", "drelar", "kuurgoth", "mec", "nellas", "mirdas"]
+        },
+        "Lastname": {
+            "firstPart":["Sava", "Rho", "Zo", "Xar", "Xarha", "Qel", "Eraj", "Rashi", "Mor", "Gora", "Zraba"],
+            "secondPart": ["rax", "farn", "wunax", "zavur", "daar", "thas", "hazar", "xiros", "rish", "roth", "rakas"]
+        }
+    },
+    "Aasimar": {
+        "Female": {
+            "firstPart": ["Bri", "Zim", "Anri", "Phion", "Om", "Drio", "Aldri", "Ferja", "Iar"],
+            "secondPart": ["se", "do", "aza", "vele", "zin", "dra", "rhami", "noe", "lou"]
+        },
+        "Male": {
+            "firstPart": ["Hor", "Wygg", "Varlon", "Byg", "Can", "Zul", "Lega", "In", "Terne"],
+            "secondPart": ["wel", "ridur", "waman", "gant", "wain", "ratil", "dint", "galeen", "deevil", "vail"]
+        },
+        "Lastname": {
+            "firstPart":[""],
+            "secondPart": [""]
+        }
+    }
+}
