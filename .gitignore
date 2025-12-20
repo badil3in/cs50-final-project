@@ -209,3 +209,6 @@ __marimo__/
 #Custom
 /flask_session
 /phpliteadmin-dev
+
+#MacOS
+.DS_Store
