@@ -39,6 +39,7 @@ jobs:
           name: python-app
           path: |
             .
+            npc_gen.db
             !antenv/
 
       # 🚫 Opting Out of Oryx Build
@@ -73,4 +74,5 @@ jobs:
         with:
           app-name: 'npc-generator'
           slot-name: 'Production'
+
           
