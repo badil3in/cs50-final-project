@@ -237,14 +237,17 @@ def overview():
     db = get_db()
 
     user = session.get("user_id")
-    rows = db.execute("""SELECT npc.name, age_category.age, alignments.alignment, attitudes.attitude,
+    print("PARAM:", type(user), user)
+    print("TUPLE:", (user,))
+    rows = db.execute("""
+                      SELECT npc.name, age_category.age, alignments.alignment, attitudes.attitude,
                       attitudes.attitude_desc, bodyshape.bodyshape, bodyshape.body_desc,
                       classes.class, environments.environment, environments.env_desc, gender.gender,
                       looks.look, looks.look_desc, professions.profession, quirks.quirk, regions.region, 
                       regions.region_desc, social_classes.social, social_classes.social_desc, species.race, 
                       styles.style, styles.style_desc, talents.talent, traits.trait AS trait1, 
                       traits.trait_desc AS trait1_desc, traits2.trait AS trait2, traits2.trait_desc AS trait2_desc
-                      FROM "npc"
+                      FROM npc
                       JOIN age_category ON age_category.id = npc.age_id
                       JOIN alignments ON alignments.id = npc.alignment_id
                       JOIN attitudes ON attitudes.id = npc.attitude_id
@@ -262,7 +265,8 @@ def overview():
                       JOIN talents ON talents.id = npc.talent_id
                       JOIN traits ON traits.id = npc.trait1_id
                       JOIN traits AS traits2 ON traits2.id = npc.trait2_id
-                      WHERE user_id = ?""", (user,)).fetchall()
+                      WHERE user_id = ?""", 
+                      (user,)).fetchall()
     return render_template("overview.html", data=rows)
 
 if __name__ == "__main__":
