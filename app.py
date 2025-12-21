@@ -191,7 +191,7 @@ def login():
 
         # Query database for username
         rows = db.execute(
-            "SELECT * FROM users WHERE username = ?", (request.form.get("username")),
+            "SELECT * FROM users WHERE username = ?", (request.form.get("username"),)
         ).fetchall()
         print("rows: ", rows)
 
