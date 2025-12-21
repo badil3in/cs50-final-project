@@ -140,9 +140,7 @@
                 </div>
             </div>
             <div class="overview-container gap-3">
-                <!-- Stack the columns on mobile by making one full-width and the other half-width -->
                 <div>
-                    <!-- <p class="h5">Overview</p> -->
                 </div>            
                 <div class="flex-col bg-light-subtle border border-light d-flex p-2">
                     <div class="small-font text-start">Species:</div> 
@@ -596,7 +594,7 @@
         </div>
         <div class="overview-container gap-3">
             <div class="card">
-                <img src="..." class="card-img-top" alt="...">
+                <img src="#" class="card-img-top" alt="#">
             </div>
             <div d-flex p-2 w-100 id="save-area">
                 <div id="liveAlertPlaceholder"></div>
@@ -605,4 +603,10 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block scripts %}
+    
+    <script src="/static/js/name_gen.js"></script>
+    <script src="/static/js/random.js"></script>
+
 {% endblock %}

@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Overview
+{% endblock %}
+
+{% block main %}
+
+<div class="accordion" id="overview">
+
+        
+    {% for row in data %}
+
+    <div class="accordion-item mb-1">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" style="flex-direction: column;" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapseOne">
+                <strong>{{ row.name }}</strong> <br> {{ row.race }} | {{ row.gender }} | {{ row.profession }}
+            </button>
+        </h2>
+        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <div class="overview-container2 gap-3">
+                    <div class="flex-row flex-fill bg-light-subtle border border-light d-flex p-2 w100">
+                        <div class="w-50">
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font text-start">
+                                    <div>
+                                        Alignment:
+                                    </div>
+                                </div>
+                                <p> {{ row.alignment }} </p>
+                            </div>
+                        </div>
+                        <div class="w-50">
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font text-start">
+                                    <div>
+                                        Age:
+                                    </div>
+                                </div>
+                                <p> {{ row.age }} </p>
+                            </div>
+                        </div>
+                        <div class="w-50">
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font text-start">
+                                    <div>
+                                        Class:
+                                    </div>
+                                </div>
+                                <p> {{ row.class }} </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-col bg-light-subtle border border-light d-flex p-2">
+                        <h5 class="small-font">Origin</h5>
+                        <div>
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font text-start">
+                                    <div>
+                                        Social Class:
+                                    </div>
+                                </div>
+                                <p><i>{{ row.social }}</i> - {{ row.social_desc }}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font">
+                                    <div>
+                                        Environment: 
+                                    </div>
+                                </div>
+                                <p> 
+                                    <i>{{ row.environment }}</i> - {{ row.env_desc }}
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font">
+                                    <div>
+                                        Region:
+                                    </div>
+                                </div>
+                                <p><i>{{ row.region }}</i> - {{ row.region_desc }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-col bg-light-subtle border border-light d-flex p-2">
+                        <div>
+                            <h5 class="small-font">Personality</h5>
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font text-start">
+                                    <div>
+                                        Traits:
+                                    </div>
+                                </div>
+                                <p><i>{{ row.trait1 }}</i> – {{ row.trait1_desc }}</p>
+                                <p><i>{{ row.trait2 }}</i> – {{ row.trait2_desc }}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font">
+                                    <div>
+                                        Talent: 
+                                    </div>
+                                </div>
+                                <p> 
+                                    {{ row.talent }}
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font">
+                                    <div>
+                                        Quirk:
+                                    </div>
+                                </div>
+                                <p>{{ row.quirk }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-row flex-fill bg-light-subtle border border-light d-flex p-2 w100">
+                        <div class="w-100">
+                            <div class="btn w-100 text-start">
+                                <div class="grid small-font text-start">
+                                    <div>
+                                        Appearance:
+                                    </div>
+                                </div>
+                                <p> 
+                                    {{ row.bodyshape }} body - {{ row.look }} look - {{ row.attitude }} attitude - {{ row.style }} style 
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  {% endfor%}
+
+{% endblock %}

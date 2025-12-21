@@ -17,6 +17,7 @@ def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
 # def get_db():
 #     conn = sqlite3.connect("npc_gen.db")
 #     conn.row_factory = sqlite3.Row
@@ -230,18 +231,6 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
-# @app.route("/options")
-# @login_required
-# def content():
-#     db = get_db()
-
-#     quirks = db.execute(
-#         """SELECT quirks.id, quirks.content, quirks.category_id, quirk_category.name 
-#         FROM quirks JOIN quirk_category ON quirks.category_id = quirk_category.id 
-#         ORDER BY quirks.category_id;""").fetchall()
-
-#     return redirect("/")
-
 @app.route("/overview")
 @login_required
 def overview():
@@ -253,7 +242,8 @@ def overview():
                       classes.class, environments.environment, environments.env_desc, gender.gender,
                       looks.look, looks.look_desc, professions.profession, quirks.quirk, regions.region, 
                       regions.region_desc, social_classes.social, social_classes.social_desc, species.race, 
-                      styles.style, styles.style_desc, talents.talent, traits.trait, traits.trait_desc 
+                      styles.style, styles.style_desc, talents.talent, traits.trait AS trait1, 
+                      traits.trait_desc AS trait1_desc, traits2.trait AS trait2, traits2.trait_desc AS trait2_desc
                       FROM "npc"
                       JOIN age_category ON age_category.id = npc.age_id
                       JOIN alignments ON alignments.id = npc.alignment_id
@@ -270,9 +260,10 @@ def overview():
                       JOIN species ON species.id = npc.race_id
                       JOIN styles ON styles.id = npc.style_id
                       JOIN talents ON talents.id = npc.talent_id
-                      JOIN traits ON traits.id = npc.trait1_id 
-                      WHERE user_id = ?""", user,).fetchall()
-
+                      JOIN traits ON traits.id = npc.trait1_id
+                      JOIN traits AS traits2 ON traits2.id = npc.trait2_id
+                      WHERE user_id = ?""", (user,)).fetchall()
+    return render_template("overview.html", data=rows)
 
 if __name__ == "__main__":
     app.run(debug=True)

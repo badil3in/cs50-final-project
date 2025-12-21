@@ -85,15 +85,11 @@ function randomizeOption2(selectedID, options, nameKey, descKey) {
         description = selectedObject[0][descKey];
     }
     return {id, name, description}
-    // "<i>" + name + "</i>" + " - " + description;
 }
 
 // from a random or selected category randomly pick a specification  
 function randomizeOptionFromCat(selected, cat_options, options, descKey) {
     // randomize category
-    // selected = randomizeOption(selected, cat_options);
-    // determine id of category
-    // let id = selected.id;
     let optionsForID = Array.from(options);
 
     // filter options if category is selected
@@ -117,10 +113,6 @@ function randomizeOptionFromCat(selected, cat_options, options, descKey) {
 }
 
 function randomizeMultipleOptions(selected, cat_options, options, nameKey, descKey) {
-    // selected ermitteln - random oder gewählt
-    // get ID from html-element of selected option = id in db
-    // console.log("selectedID trait: ", selectedID, "selected: ", selected, "options: ", options);
-
     // add "0" (universal value) to digits
     const digits = [0]
 
@@ -136,11 +128,6 @@ function randomizeMultipleOptions(selected, cat_options, options, nameKey, descK
     // convert nodelist of options to array & filter entries by alignment_id array digits
     // item = current element in array
     let optionsForID = Array.from(options).filter(item => digits.includes(item.alignment_id));
-
-    // let optionsForID = Array.from(options).filter(item => item.category_id === Number(selectedID));
-    // console.log("selected", selected);
-    // optionsForID = optionsForID.filter(item => Number(item.selectedAlignmentID) in digits);
-    // console.log("optionForID 2. filter: ", optionsForID);
 
     // filter options if category is selected
     if(selected != "Random") {
@@ -591,19 +578,6 @@ async function saveNPC() {
         <div>Character name missing!</div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
-
-        // alertPlaceholder.append(wrapper);
-        // const appendAlert = (message, type) => {
-        //     const wrapper = document.createElement('div')
-        //     wrapper.innerHTML = [
-        //         `<div class="alert alert-${type} alert-dismissible" role="alert">`,
-        //         `   <div>${message}</div>`,
-        //         '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-        //         '</div>'
-        //     ].join('')
-
-        //     alertPlaceholder.append(wrapper)
-        //     }
         console.log("Name missing")
 
     } else {
@@ -619,14 +593,18 @@ async function saveNPC() {
                 body: JSON.stringify(attributes) 
             })
 
+            // AI adapted
             const result = await response.json()
             if (!response.ok) {
                 console.error("Server error:", result);
                 alert("Error: " + result.error);
                 return;
               }
+            // AI code
+            window.location.href = "/overview";
         }
-        // AI
+        
+        // AI code
         catch (err) {
             console.log("Error: ", err);
         }

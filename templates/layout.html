@@ -28,7 +28,6 @@
                         <ul class="navbar-nav me-auto mt-2">
                             <li class="nav-item"><a class="nav-link" href="/">Creation</a></li>
                             <li class="nav-item"><a class="nav-link" href="/overview">Overview</a></li>
-                            <li class="nav-item"><a class="nav-link" href="">Topic 3</a></li>
                         </ul>
                         <ul class="navbar-nav ms-auto mt-2">
                             <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
@@ -45,10 +44,6 @@
         <main class="container py-5 text-center">
             {% block main %}{% endblock %}
         </main>
-
+        {% block scripts %}{% endblock %}
     </body>
-    <script src="/static/js/name_gen.js"></script>
-    <script src="/static/js/random.js"></script>
-
-
 </html>

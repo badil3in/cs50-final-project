@@ -19,16 +19,8 @@ function namePartsSelector(species, gender) {
     let secondPart = FIRSTNAMES[species][gender].secondPart;
     let lastnameFirstpart = FIRSTNAMES[species]["Lastname"].firstPart;
     let lastnameSecondpart = FIRSTNAMES[species]["Lastname"].secondPart;
-    // if (!gender || !species) {
-    //     let firstPart = FIRSTNAMES["elven"]["female"].firstPart;
-    //     let secondPart = FIRSTNAMES["elven"]["female"].secondPart;   
-        // return {
-        //     firstPart,
-        //     secondPart
-        // };
-     
-    
-        return {
+
+    return {
         firstPart,
         secondPart,
         lastnameFirstpart,
