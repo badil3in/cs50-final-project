@@ -159,9 +159,9 @@ function randomizeMultipleOptions(selected, cat_options, options, nameKey, descK
     } while (index2 === index1);
 
     let output1 = "<i>" + optionsForID[index1][nameKey] + "</i>" + " - " + optionsForID[index1][descKey];
-    let id1 = Array.from(options).filter(item => item.name === optionsForID[index1].name)[0].id;
+    let id1 = Array.from(options).filter(item => item[nameKey] === optionsForID[index1][nameKey])[0].id;
     let output2 = "<i>" + optionsForID[index2][nameKey] + "</i>" + " - " + optionsForID[index2][descKey];
-    let id2 = Array.from(options).filter(item => item.name === optionsForID[index2].name)[0].id;
+    let id2 = Array.from(options).filter(item => item[nameKey] === optionsForID[index2][nameKey])[0].id;
 
     console.log("output: ", output1, id1, output2, id2);
 

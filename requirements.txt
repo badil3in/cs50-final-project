@@ -1,4 +1,4 @@
+sqlite3
 Flask
 flask_session
-cs50
 gunicorn

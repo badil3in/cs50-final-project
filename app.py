@@ -1,4 +1,5 @@
-from cs50 import SQL
+import sqlite3
+
 from flask import Flask, g, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -6,7 +7,21 @@ from helper import login_required, apology
 
 app = Flask(__name__)
 
-db = SQL("sqlite:///npc_gen.db")
+# AI
+def get_db():
+    conn = sqlite3.connect("npc_gen.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# AI
+# flask schließt Verbindung automatisch wg. decorator 
+@app.teardown_appcontext
+def close_db(exception):
+    db = g.pop("db", None)
+    if db is not None:
+        db.close()
+
+# db = SQL("sqlite:///npc_gen.db")
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
@@ -27,23 +42,25 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    age = db.execute("SELECT * FROM age_category;")
-    alignments = db.execute("SELECT * FROM alignments;")
-    attitudes = db.execute("SELECT * FROM attitudes;")
-    bodyshape = db.execute("SELECT * FROM bodyshape;")
-    classes = db.execute("SELECT * FROM classes;")
-    environments = db.execute("SELECT id, environment FROM environments;")
-    gender = db.execute("SELECT * FROM gender;")
-    looks = db.execute("SELECT * FROM looks;")
-    quirk_category = db.execute("SELECT * FROM quirk_category;")
-    regions = db.execute("SELECT id, region FROM regions;")
-    professions = db.execute("SELECT * FROM professions;")
-    prof_category = db.execute("SELECT * FROM profession_category;")
-    social_classes = db.execute("SELECT id, social FROM social_classes;")
-    species = db.execute("SELECT * FROM species;")
-    styles = db.execute("SELECT * FROM styles;")
-    talent_category = db.execute("SELECT * FROM talent_category;")
-    trait_category = db.execute("SELECT * FROM trait_category;")
+    db = get_db()
+
+    age = db.execute("SELECT * FROM age_category;").fetchall()
+    alignments = db.execute("SELECT * FROM alignments;").fetchall()
+    attitudes = db.execute("SELECT * FROM attitudes;").fetchall()
+    bodyshape = db.execute("SELECT * FROM bodyshape;").fetchall()
+    classes = db.execute("SELECT * FROM classes;").fetchall()
+    environments = db.execute("SELECT id, environment FROM environments;").fetchall()
+    gender = db.execute("SELECT * FROM gender;").fetchall()
+    looks = db.execute("SELECT * FROM looks;").fetchall()
+    quirk_category = db.execute("SELECT * FROM quirk_category;").fetchall()
+    regions = db.execute("SELECT id, region FROM regions;").fetchall()
+    professions = db.execute("SELECT * FROM professions;").fetchall()
+    prof_category = db.execute("SELECT * FROM profession_category;").fetchall()
+    social_classes = db.execute("SELECT id, social FROM social_classes;").fetchall()
+    species = db.execute("SELECT * FROM species;").fetchall()
+    styles = db.execute("SELECT * FROM styles;").fetchall()
+    talent_category = db.execute("SELECT * FROM talent_category;").fetchall()
+    trait_category = db.execute("SELECT * FROM trait_category;").fetchall()
     
 
     return render_template(
@@ -56,43 +73,57 @@ def index():
 @app.route("/api/quirks")
 @login_required
 def api_quirks():
-    rows = db.execute("SELECT * FROM quirks")
+    db = get_db()
+
+    rows = db.execute("SELECT * FROM quirks").fetchall()
     return jsonify([dict(row) for row in rows])
 
 @app.route("/api/talents")
 @login_required
 def api_talents():
-    rows = db.execute("SELECT * FROM talents")
+    db = get_db()
+
+    rows = db.execute("SELECT * FROM talents").fetchall()
     return jsonify([dict(row) for row in rows])
 
 @app.route("/api/traits")
 @login_required
 def api_traits():
-    rows = db.execute("SELECT * FROM traits")
+    db = get_db()
+
+    rows = db.execute("SELECT * FROM traits").fetchall()
     return jsonify([dict(row) for row in rows])
 
 @app.route("/api/regions")
 @login_required
 def api_regions():
-    rows = db.execute("SELECT * FROM regions")
+    db = get_db()
+
+    rows = db.execute("SELECT * FROM regions").fetchall()
     return jsonify([dict(row) for row in rows])
 
 @app.route("/api/environments")
 @login_required
 def api_environments():
-    rows = db.execute("SELECT * FROM environments")
+    db = get_db()
+
+    rows = db.execute("SELECT * FROM environments").fetchall()
     return jsonify([dict(row) for row in rows])
 
 @app.route("/api/socials")
 @login_required
 def api_socials():
-    rows = db.execute("SELECT * FROM social_classes")
+    db = get_db()
+
+    rows = db.execute("SELECT * FROM social_classes").fetchall()
     print("JSON socials: ", jsonify([dict(row) for row in rows]))
     return jsonify([dict(row) for row in rows])
 
 @app.route("/api/save_npc", methods=["POST"])
 @login_required
 def api_savenpc():
+    
+
     if request.method == "POST":
         user = session.get("user_id")
         npc = request.get_json()
@@ -100,25 +131,39 @@ def api_savenpc():
         if not npc:
             return apology("no data", 400)
         try:
-            db.execute("""INSERT INTO npc (user_id, name, age_id, alignment_id, attitude_id, 
-                   bodyshape_id, class_id, environment_id, gender_id, look_id, profession_id,
-                   quirk_id, race_id, region_id, social_id, style_id, talent_id, trait1_id, 
-                   trait2_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", 
-                   user, npc["name"], npc["age"], npc["alignment"], npc["Attitude"], npc["bodyshape"],
-                   npc["class"], npc["environment"], npc["gender"], npc["look"], npc["prof"],
-                   npc["quirk"], npc["race"], npc["region"], npc["social"], npc["Style"], npc["talent"],
-                   npc["trait1"], npc["trait2"])
-        except KeyError:
-            return apology("key error", 400)
-        except TypeError:
-            return apology("type error", 400)
-        except ValueError:
-            return apology("value error", 400)
-        except RuntimeError:
-            return apology("runtime error", 400)
-
-
-
+            db = get_db()
+            db.execute("""INSERT INTO npc (
+                       user_id, name, age_id, alignment_id, attitude_id, bodyshape_id, 
+                       class_id, environment_id, gender_id, look_id, profession_id,
+                       quirk_id, race_id, region_id, social_id, style_id, talent_id, trait1_id, 
+                       trait2_id
+                    ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", 
+                    (user, 
+                    npc["name"], 
+                    npc["age"], 
+                    npc["alignment"], 
+                    npc["Attitude"], 
+                    npc["bodyshape"],
+                    npc["class"], 
+                    npc["environment"], 
+                    npc["gender"], 
+                    npc["look"], 
+                    npc["prof"],
+                    npc["quirk"], 
+                    npc["race"], 
+                    npc["region"], 
+                    npc["social"], 
+                    npc["Style"], 
+                    npc["talent"],
+                    npc["trait1"], 
+                    npc["trait2"]))
+            db.commit() # nur bei Änderungen in der DB
+        except KeyError as e:
+            print("Key Error:", e)
+            return apology("SQL Lite Error", 500)          
+        except sqlite3.Error as e:
+            print("SQL Lite error:", e)
+            return apology("SQL Lite Error", 500)
         
     # return response for JS 
     return jsonify({
@@ -132,6 +177,7 @@ def login():
 
     # Forget any user_id
     session.clear()
+    db = get_db()
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
@@ -175,19 +221,23 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
-@app.route("/options")
-@login_required
-def content():
-    quirks = db.execute(
-        """SELECT quirks.id, quirks.content, quirks.category_id, quirk_category.name 
-        FROM quirks JOIN quirk_category ON quirks.category_id = quirk_category.id 
-        ORDER BY quirks.category_id;""")
+# @app.route("/options")
+# @login_required
+# def content():
+#     db = get_db()
 
-    return redirect("/")
+#     quirks = db.execute(
+#         """SELECT quirks.id, quirks.content, quirks.category_id, quirk_category.name 
+#         FROM quirks JOIN quirk_category ON quirks.category_id = quirk_category.id 
+#         ORDER BY quirks.category_id;""").fetchall()
+
+#     return redirect("/")
 
 @app.route("/overview")
 @login_required
 def overview():
+    db = get_db()
+
     user = session.get("user_id")
     rows = db.execute("""SELECT npc.name, age_category.age, alignments.alignment, attitudes.attitude,
                       attitudes.attitude_desc, bodyshape.bodyshape, bodyshape.body_desc,
@@ -212,7 +262,7 @@ def overview():
                       JOIN styles ON styles.id = npc.style_id
                       JOIN talents ON talents.id = npc.talent_id
                       JOIN traits ON traits.id = npc.trait1_id 
-                      WHERE user_id = ?""", user)
+                      WHERE user_id = ?""", user).fetchall()
 
 
 if __name__ == "__main__":
