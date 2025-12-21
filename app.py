@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 from flask import Flask, g, redirect, render_template, request, session, jsonify
@@ -8,10 +9,18 @@ from helper import login_required, apology
 app = Flask(__name__)
 
 # AI
+# setzt den DB‑Pfad relativ zum Dateistandort deiner App
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "npc_gen.db")
+
 def get_db():
-    conn = sqlite3.connect("npc_gen.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+# def get_db():
+#     conn = sqlite3.connect("npc_gen.db")
+#     conn.row_factory = sqlite3.Row
+#     return conn
 
 # AI
 # flask schließt Verbindung automatisch wg. decorator 
@@ -262,7 +271,7 @@ def overview():
                       JOIN styles ON styles.id = npc.style_id
                       JOIN talents ON talents.id = npc.talent_id
                       JOIN traits ON traits.id = npc.trait1_id 
-                      WHERE user_id = ?""", user).fetchall()
+                      WHERE user_id = ?""", user,).fetchall()
 
 
 if __name__ == "__main__":
