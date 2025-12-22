@@ -239,7 +239,7 @@ def logout():
     return redirect("/")
 
 # image generator - prompt generation + API request
-@app.route("/generate_image", method=["POST"])
+@app.route("/generate_image", methods=["POST"])
 @login_required
 def generate_image():
     # AI help
