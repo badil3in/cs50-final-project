@@ -23,6 +23,14 @@ def get_db():
 #     conn.row_factory = sqlite3.Row
 #     return conn
 
+def promptBuilder(npc):
+    # get literals for IDs from db
+    return
+
+def callImageAPI(prompt):
+    # API request 
+    return
+
 # AI
 # flask schließt Verbindung automatisch wg. decorator 
 @app.teardown_appcontext
@@ -132,7 +140,6 @@ def api_socials():
 @app.route("/api/save_npc", methods=["POST"])
 @login_required
 def api_savenpc():
-    
 
     if request.method == "POST":
         user = session.get("user_id")
@@ -231,14 +238,25 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
+# image generator - prompt generation + API request
+@app.route("/generate_image", method=["POST"])
+@login_required
+def generate_image():
+    # AI help
+    if request.method == "POST":
+        npc = request.get_json()
+        prompt = promptBuilder(npc)
+        image = callImageAPI(prompt)
+    return
+
 @app.route("/overview")
 @login_required
 def overview():
     db = get_db()
 
     user = session.get("user_id")
-    print("PARAM:", type(user), user)
-    print("TUPLE:", (user,))
+    # print("PARAM:", type(user), user)
+    # print("TUPLE:", (user,))
     rows = db.execute("""
                       SELECT npc.name, age_category.age, alignments.alignment, attitudes.attitude,
                       attitudes.attitude_desc, bodyshape.bodyshape, bodyshape.body_desc,
