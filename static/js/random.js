@@ -9,12 +9,15 @@ let style_locked = false;
 let trait1_locked = false;
 let trait2_locked = false;
 let talents_locked = false;
-let basics_generated = true;
+let basics_generated = false;
 let origin_generated = false;
 let personality_generated = false;
 let appearance_generated = false;
 
 let attributes = {};
+
+// number of needed attributes minus name
+const N = 18;
 
 const iconLock = `
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
@@ -40,14 +43,14 @@ function getOptionIdByValue(selectedElement, value) {
 
 // reusable lock-funcion - in progress
 function btn_check(target_element, element_locked) {
-    target_element.addEventListener('change', function(e){
-        if (e.target.checked) {
-            element_locked = true;
-        } else {
-            element_locked = false;
-        }
-    })
+    if (target_element.checked) {
+        element_locked = true;
+    } else {
+        element_locked = false;
+    }
+    return element_locked
 }
+
 
 // output a random or the selected value in html
 function randomizeOption(selected, options) {
@@ -63,23 +66,25 @@ function randomizeOption(selected, options) {
     }
     return output;
 }
+
+// output a random or the selected value in html
 function randomizeOption2(selectedID, options, nameKey, descKey) {
     let name;
     let description;
-    console.log("options: ", options, "selectedID: ", selectedID);
+    // console.log("options: ", options, "selectedID: ", selectedID);
     if (selectedID == "Random") {    
         // AI - exclude Random and None
         const exclude = ["Random", "None"];
         const validOptions = options.filter(opt => !exclude.includes(opt.value)); // Ist der Wert nicht in der Ausschlussliste?
-        console.log("validOptions: ", validOptions);
+        // console.log("validOptions: ", validOptions);
         let index = getRndInteger(0, validOptions.length - 1);
-        console.log("index: ", index);
+        // console.log("index: ", index);
         id = options[index].id;
         name = options[index][nameKey];
         description = options[index][descKey];
     } else {
         let selectedObject = options.filter(item => item.id === Number(selectedID));
-        console.log("region else: ", selectedObject);
+        // console.log("region else: ", selectedObject);
         id = options[0].id;
         name = selectedObject[0][nameKey];
         description = selectedObject[0][descKey];
@@ -158,6 +163,54 @@ function randomizeMultipleOptions(selected, cat_options, options, nameKey, descK
     } 
 }
 
+// generate appearance on button click
+function appearance_generator(event) {
+    event.preventDefault();
+
+    const data = new FormData(form_appearance);
+
+    let attitude = data.get('attitude');
+    let bodyshape = data.get('bodyshape');
+    let look = data.get('look');
+    let style = data.get('style');
+    
+    const body_options = document.querySelector('#bodyshape').options;
+    const look_options = document.querySelector('#look').options;
+    const attitude_options = document.querySelector('#attitude').options;
+    const style_options = document.querySelector('#style').options;
+
+    console.log("body: ", body_options, "look: ", look_options, "attutide: ", attitude_options, "style: ", style_options);
+
+    let bodyOutput = document.querySelector('#bodyshape_output');
+    let lookOutput = document.querySelector('#look_output');
+    let attitudeOutput = document.querySelector('#attitude_output');
+    let styleOutput = document.querySelector('#style_output');
+
+    if (!bodyshape_locked) {
+        let generatedBodyshape = randomizeOption(bodyshape, body_options, bodyOutput).toString().split('|', 2);
+        bodyOutput.innerHTML = generatedBodyshape[1];
+        attributes.bodyshape = Number(generatedBodyshape[0]);
+        // console.log("attributes: ", attributes); 
+    }
+    if (!look_locked) {
+        let generatedLook = randomizeOption(look, look_options, lookOutput).toString().split('|', 2);
+        lookOutput.innerHTML = generatedLook[1];
+        attributes.look = Number(generatedLook[0]);
+    }
+    if (!attitude_locked) {
+        let generatedAttitude = randomizeOption(attitude, attitude_options, attitudeOutput).toString().split('|', 2);
+        attitudeOutput.innerHTML = generatedAttitude[1];
+        attributes.Attitude = Number(generatedAttitude[0]);
+    }
+    if (!style_locked) {
+        let generatedStyle = randomizeOption(style, style_options, styleOutput).toString().split('|', 2);
+        styleOutput.innerHTML = generatedStyle[1];
+        attributes.Style = Number(generatedStyle[0]);
+    }
+    // console.log("attributes: ", attributes); 
+    appearance_generated = true;
+}
+
 // generate basic attributes on button click
 function basic_generator(event) {
     event.preventDefault();
@@ -209,55 +262,7 @@ function basic_generator(event) {
     attributes.prof = Number(generatedProf[0]);
 
     // basics_generated = true;
-    console.log("attributes: ", attributes); 
-}
-
-// generate appearance on button click
-function appearance_generator(event) {
-    event.preventDefault();
-
-    const data = new FormData(form_appearance);
-
-    let attitude = data.get('attitude');
-    let bodyshape = data.get('bodyshape');
-    let look = data.get('look');
-    let style = data.get('style');
-    
-    const body_options = document.querySelector('#bodyshape').options;
-    const look_options = document.querySelector('#look').options;
-    const attitude_options = document.querySelector('#attitude').options;
-    const style_options = document.querySelector('#style').options;
-
-    console.log("body: ", body_options, "look: ", look_options, "attutide: ", attitude_options, "style: ", style_options);
-
-    let bodyOutput = document.querySelector('#bodyshape_output');
-    let lookOutput = document.querySelector('#look_output');
-    let attitudeOutput = document.querySelector('#attitude_output');
-    let styleOutput = document.querySelector('#style_output');
-
-    if (!bodyshape_locked) {
-        let generatedBodyshape = randomizeOption(bodyshape, body_options, bodyOutput).toString().split('|', 2);
-        bodyOutput.innerHTML = generatedBodyshape[1];
-        attributes.bodyshape = Number(generatedBodyshape[0]);
-        console.log("attributes: ", attributes); 
-    }
-    if (!look_locked) {
-        let generatedLook = randomizeOption(look, look_options, lookOutput).toString().split('|', 2);
-        lookOutput.innerHTML = generatedLook[1];
-        attributes.look = Number(generatedLook[0]);
-    }
-    if (!attitude_locked) {
-        let generatedAttitude = randomizeOption(attitude, attitude_options, attitudeOutput).toString().split('|', 2);
-        attitudeOutput.innerHTML = generatedAttitude[1];
-        attributes.Attitude = Number(generatedAttitude[0]);
-    }
-    if (!style_locked) {
-        let generatedStyle = randomizeOption(style, style_options, styleOutput).toString().split('|', 2);
-        styleOutput.innerHTML = generatedStyle[1];
-        attributes.Style = Number(generatedStyle[0]);
-    }
-    console.log("attributes: ", attributes); 
-    appearance_generated = true;
+    // console.log("attributes: ", attributes); 
 }
 
 // generate background attributes on button click
@@ -322,7 +327,7 @@ async function background_generator(event) {
         attributes.region = generatedRegion.id;
     }
 
-    console.log("attributes: ", attributes); 
+    // console.log("attributes: ", attributes); 
     origin_generated = true;
 
 }
@@ -373,6 +378,7 @@ async function personality_generator(event) {
     let traitsOutput1 = document.querySelector('#traits_output1');
     let traitsOutput2 = document.querySelector('#traits_output2');
 
+    // TODO - deal with selection "None"
 
     // console.log("traits output: ", traitsOutput);
 
@@ -397,11 +403,166 @@ async function personality_generator(event) {
         attributes.trait2 = traits_output.id2;
     }
 
-    console.log("attributes: ", attributes); 
+    // console.log("attributes: ", attributes); 
     personality_generated = true;
+}
+
+async function pic_gen(event) {
+    event.preventDefault()
+    let name = document.querySelector('#NPCname').value;
+    let hair = document.querySelector('#hair').value;
+    let skin = document.querySelector('#skin').value;
+    let uniqueFacials = document.querySelector('#unique_facial').value;
+    // alert if anything is missing
+    const alertPlaceholder = document.getElementById('picGenAlertPlaceholder');
+    console.log("attributes pic_gen: ", attributes);
+    console.log("length: ", Object.entries(attributes).length);
+    if(!name){
+        // bootstrap JS
+        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
+        <div>Character name missing!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+        console.log("1. IF Name missing")
+    } else if(Object.entries(attributes).length < N - 1) {
+        console.log("2. IF attributes(pic_gen): ", attributes);
+        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
+        <div>Attributes missing!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`
+    } else {
+        if(hair && hair != "None") {
+            attributes.hair = hair;
+        }
+        if(skin && skin != "None") {
+            attributes.skin = skin;
+        }
+        if(uniqueFacials && uniqueFacials != "None") {
+            attributes.uniqueFacials = uniqueFacials;
+        }
+        console.log("ELSE attributes (else): ", attributes);
+        attributes.name = name;
+
+        try {
+            const imageContainer = document.getElementById('generatedImage');
+            imageContainer.classList.add('placeholder');
+            const response = await fetch("/generate_image", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(attributes) 
+            })
+
+            // AI adapted
+            alertPlaceholder.innerHTML = `<div class="alert alert-success alert-dismissible" role="alert">
+            <div>Processing request...</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`
+
+            const result = await response.json()
+            // adapted AI code line
+
+            document.getElementById("generatedImage").src = result.src;
+            imageContainer.classList.remove('placeholder');
+
+            if (!response.ok) {
+                console.error("Server error:", result);
+                alert("Error: " + result.error);
+                alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
+                <div>Fetch error</div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>`
+                return;
+              }
+            // AI code
+            // window.location.href = "/";
+        }
+        
+        // AI code
+        catch (err) {
+            console.log("Error: ", err);
+            alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
+            <div>Error catch: ${err}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`
+            return
+        }
+    }
+    return
 
 }
 
+async function saveNPC() {
+    let name = document.querySelector('#NPCname').value;
+    console.log("name: ", name);
+    const alertPlaceholder = document.getElementById('saveAlertPlaceholder');
+
+    if(!basics_generated) {
+        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
+        <div>Basics attributes missing!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`
+
+    } else if(!origin_generated) {
+        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
+        <div>Origin attributes missing!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`
+
+    } else if(!personality_generated) {
+        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
+        <div>Personality attributes missing!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`
+
+    } else if(!appearance_generated) {
+        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
+        <div>Appearance attributes missing!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`
+
+    } else if(!name){
+        // bootstrap JS
+        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
+        <div>Character name missing!</div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`;
+        console.log("Name missing")
+
+    } else {
+        attributes.name = name;
+        
+        console.log("fetch attributes: ", attributes); 
+        try {
+            const response = await fetch("/api/save_npc", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(attributes) 
+            })
+
+            // AI adapted
+            const result = await response.json()
+            if (!response.ok) {
+                console.error("Server error:", result);
+                alert("Error: " + result.error);
+                return;
+              }
+            // AI code
+            window.location.href = "/overview";
+        }
+        
+        // AI code
+        catch (err) {
+            console.log("Error: ", err);
+        }
+    }
+}
+ 
+// generate-buttons
+ 
 let form_basics = document.getElementById('basics-form');   
 form_basics.addEventListener('submit', basic_generator);
 
@@ -414,6 +575,51 @@ form_background.addEventListener('submit', background_generator);
 let form_personality = document.getElementById('personality-form');
 form_personality.addEventListener('submit', personality_generator);
 
+// alignment off canvas requests - AI help
+let alignment_offcanvas = document.getElementById('offcanvasAlignment');
+let alignment_offcanvas_content = document.getElementById('alignment-details');
+
+alignment_offcanvas.addEventListener('show.bs.offcanvas', async function(event){
+    alignment_offcanvas_content.innerHTML = "Loading...";
+
+    // get selected alignment from innerHTML
+    alignment = document.getElementById('alignment_output').innerHTML.replace(" ", "-").toLowerCase();
+    console.log("alignment: ", alignment);
+
+    // fetch API
+    const response = await fetch(`https://www.dnd5eapi.co/api/2014/alignments/${alignment}`);
+    const result = await response.json();
+
+    // fill offcanvas
+    alignment_offcanvas_content.innerHTML = `<h5>${result.name}</h5><br><p>${result.desc}</p>`;
+})
+
+// species off canvas requests - AI help
+let species_offcanvas = document.getElementById('offcanvasSpecies');
+let species_offcanvas_content = document.getElementById('species-details');
+const missingSpecies = ["goliath", "aasimar"];
+
+species_offcanvas.addEventListener('show.bs.offcanvas', async function(event) {
+    species_offcanvas_content.innerHTML = "Loading...";
+    console.log("missingspecies: ", missingSpecies);
+    species = document.getElementById('species_output').innerHTML.toLowerCase();
+    console.log('species: ', species);
+     
+    // handle species missing in API
+    if(missingSpecies.includes(species)) {
+        // fallbackdaten
+        species_offcanvas_content.innerHTML = "Coming soon..";
+        return;
+    }
+
+    const response = await fetch(`https://www.dnd5eapi.co/api/2014/races/${species}`);
+    const result = await response.json();
+
+    species_offcanvas_content.innerHTML = `<h5>${result.name}</h5><br>
+                                            <p><strong>Age: </strong> ${result.age}</p><br>
+                                            <p><strong>Alignment: </strong>${result.alignment}</p>
+                                            <p><strong>Language: </strong>${result.language_desc}</p>`
+})
 // track locked fields - TODO: abstract away function
 
 let bodyshape_btn_check = document.getElementById('btn-check-1a');
@@ -426,6 +632,7 @@ bodyshape_btn_check.addEventListener('change', function(e){
         document.querySelector('label[for="btn-check-1a"] div.svg').innerHTML = iconUnlock;
     }
 })
+
 let look_btn_check = document.getElementById('btn-check-1b');
 look_btn_check.addEventListener('change', function(e){
     if (e.target.checked) {
@@ -545,68 +752,5 @@ trait2_btn_check.addEventListener('change', function(e){
     }
 })
 
-async function saveNPC() {
-    let name = document.querySelector('#NPCname').value;
-    console.log("name: ", name);
-    const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-
-    if(!basics_generated) {
-        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
-        <div>Basics attributes missing!</div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`
-
-    } else if(!origin_generated) {
-        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
-        <div>Origin attributes missing!</div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`
-
-    } else if(!personality_generated) {
-        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
-        <div>Personality attributes missing!</div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`
-    } else if(!appearance_generated) {
-        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
-        <div>Appearance attributes missing!</div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`
-    } else if(!name){
-        // bootstrap JS
-        alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
-        <div>Character name missing!</div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>`;
-        console.log("Name missing")
-
-    } else {
-        attributes.name = name;
-        
-        console.log("fetch attributes: ", attributes); 
-        try {
-            const response = await fetch("/api/save_npc", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(attributes) 
-            })
-
-            // AI adapted
-            const result = await response.json()
-            if (!response.ok) {
-                console.error("Server error:", result);
-                alert("Error: " + result.error);
-                return;
-              }
-            // AI code
-            window.location.href = "/overview";
-        }
-        
-        // AI code
-        catch (err) {
-            console.log("Error: ", err);
-        }
-    }
-}
+let pic_gen_button = document.getElementById('pic_gen');
+pic_gen_button.addEventListener('click', pic_gen)

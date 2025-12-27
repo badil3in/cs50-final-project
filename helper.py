@@ -1,6 +1,7 @@
 from flask import redirect, render_template, session
 from functools import wraps
 
+# adapted from cs50 problemset
 def apology(message, code=400):
     """Render message as an apology to user."""
 
@@ -25,6 +26,7 @@ def apology(message, code=400):
 
     return render_template("apology.html", top=code, bottom=escape(message)), code
 
+# from cs50 problemset
 def login_required(f):
     """
     Decorate routes to require login.

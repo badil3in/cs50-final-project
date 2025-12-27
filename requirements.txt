@@ -1,3 +1,5 @@
 Flask
 flask_session
 gunicorn
+python-dotenv
+requests

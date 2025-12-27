@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import requests
 
 from flask import Flask, g, redirect, render_template, request, session, jsonify
 from flask_session import Session
@@ -13,33 +14,107 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "npc_gen.db")
 
+# TODO - anpassen
+
 def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
-# def get_db():
-#     conn = sqlite3.connect("npc_gen.db")
-#     conn.row_factory = sqlite3.Row
-#     return conn
-
 def promptBuilder(npc):
     # get literals for IDs from db
+    print("npc promptBuilder: ", npc)
+    db = get_db()
+    rows = db.execute("""
+                      SELECT age_category.age, attitudes.attitude,
+                      attitudes.attitude_desc, bodyshape.bodyshape, bodyshape.body_desc,
+                      classes.class, environments.environment, environments.env_desc, gender.gender,
+                      looks.look, looks.look_desc, professions.profession, regions.region, 
+                      regions.region_desc, social_classes.social, social_classes.social_desc, species.race, 
+                      styles.style, styles.style_desc
+                      FROM age_category
+                      JOIN attitudes ON attitudes.id = ?
+                      JOIN bodyshape ON bodyshape.id = ?
+                      JOIN classes ON classes.id = ?
+                      JOIN environments ON environments.id = ?
+                      JOIN gender ON gender.id = ?
+                      JOIN looks ON looks.id = ?
+                      JOIN professions ON professions.id = ?
+                      JOIN regions ON regions.id = ?
+                      JOIN social_classes ON social_classes.id = ?
+                      JOIN species ON species.id = ?
+                      JOIN styles ON styles.id = ?
+                      JOIN traits ON traits.id = ?
+                      JOIN traits AS traits2 ON traits2.id = ?
+                      WHERE age_category.id = ?""", 
+                      (npc["Attitude"], npc["bodyshape"], npc["class"], npc["environment"], npc["gender"],
+                      npc["look"], npc["prof"], npc["region"], npc["social"], npc["race"], npc["Style"],
+                      npc["trait1"], npc["trait2"],
+                      npc["age"])).fetchall()
+    print("rows: ", npc["name"])
+    return (f"A detailed fantasy portrait of {npc["name"]}, a {rows[0]["gender"].lower()}" 
+            f" {rows[0]["race"].lower()}, {rows[0]["age"].lower()} of age, who is a professional"
+            f" {rows[0]["profession"].lower()}. Appearance: has a {rows[0]["bodyshape"].lower()}" 
+            f" bodyshape for a {rows[0]["race"].lower()} - {rows[0]["body_desc"]}. Has a {rows[0]["look"].lower()}" 
+            f" look - {rows[0]["look_desc"]} - with {npc["hair"]} hair, {npc["skin"]} skin and {npc["uniqueFacials"]}."
+            f" Is emanating a {rows[0]["attitude"].lower()} attitude - {rows[0]["attitude_desc"].lower()}." 
+            f" Dress style: {rows[0]["style"].lower()}, {rows[0]["style_desc"].lower()} with faint"
+            f" influences of their {rows[0]["environment"].lower()} and {rows[0]["social"].lower()}"
+            f" origin.")
+    
+# AI adapted
+def callImageAPI(prompt):
     return
 
-def callImageAPI(prompt):
-    # API request 
-    return
+def call_image_api(prompt):
+    # metadaten
+    API_KEY = os.getenv("API_KEY_OPEN_AI")
+    print("api key: ", API_KEY)
+    # print("os.environ: ", os.environ)
+    API_URL = "https://api.openai.com/v1/images/generations"
+
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    # TODO - ggf. anpassen + ergänzen
+    # Daten, die im request an API gesendet werden
+    payload = {
+        "model": "dall-e-3",
+        "prompt": prompt,
+        "n": 1,
+        "size": "1024x1024"
+    }
+
+    try:
+        response = requests.post(API_URL, headers=headers, json=payload)
+        # check if error ocurred during request by requests method raise_for_status
+        response.raise_for_status() 
+        data = response.json()
+        print("data: ", data)
+    except requests.exceptions.HTTPError as e:
+        print("HTTPError: ", e, 
+              "message: ", response.json()["error"]["message"])
+        message = response.json()["error"]["message"]
+        return message
+    except requests.exceptions.RequestException as e:
+        print("RequestException: ", e,
+            "message: ", response.json()["error"]["message"])
+        return
+
+    # print("response: ", response.status_code)
+    # print("data: ", data)
+    # Beispiel: API liefert eine URL zurück
+    return data
 
 # AI
-# flask schließt Verbindung automatisch wg. decorator 
+# flask schließt DB Verbindung automatisch wg. decorator 
 @app.teardown_appcontext
 def close_db(exception):
     db = g.pop("db", None)
     if db is not None:
         db.close()
-
-# db = SQL("sqlite:///npc_gen.db")
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_PERMANENT"] = False
@@ -188,6 +263,37 @@ def api_savenpc():
         "redirect": "/overview"
     })
 
+# image generator - using prompt generator + API request
+@app.route("/generate_image", methods=["POST"])
+@login_required
+def generate_image():
+
+    # adapted from AI 
+    if request.method == "POST":
+        try:
+            npc = request.get_json()
+            print("npc: ", npc)
+            prompt = promptBuilder(npc) 
+            image = call_image_api(prompt)
+            
+            # return just the b64 image data from JSON as src string    
+            return jsonify({
+            # adapted AI line
+            "src": f"{image['data'][0]['url']}"})
+
+        except TypeError as e:
+            print("TypeError: ", e,
+                  "image: ", image)
+            return image
+        except AttributeError as e:
+            print("AttributeError: ", e)
+            return image
+        except KeyError as e:
+            print("KeyError: ", e)
+            return image
+
+
+# from cs50 problemset
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
@@ -228,6 +334,7 @@ def login():
     else:
         return render_template("login.html")
     
+# from cs50 problemset
 @app.route("/logout")
 def logout():
     """Log user out"""
@@ -238,25 +345,12 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
-# image generator - prompt generation + API request
-@app.route("/generate_image", methods=["POST"])
-@login_required
-def generate_image():
-    # AI help
-    if request.method == "POST":
-        npc = request.get_json()
-        prompt = promptBuilder(npc)
-        image = callImageAPI(prompt)
-    return
-
 @app.route("/overview")
 @login_required
 def overview():
     db = get_db()
 
     user = session.get("user_id")
-    # print("PARAM:", type(user), user)
-    # print("TUPLE:", (user,))
     rows = db.execute("""
                       SELECT npc.name, age_category.age, alignments.alignment, attitudes.attitude,
                       attitudes.attitude_desc, bodyshape.bodyshape, bodyshape.body_desc,
