@@ -4,7 +4,7 @@ import requests
 import time
 
 from datetime import datetime
-from flask import Flask, g, redirect, render_template, request, session, jsonify
+from flask import Flask, g, redirect, render_template, request, session, jsonify, send_from_directory
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from helper import login_required, apology
@@ -16,6 +16,12 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "npc_gen.db")
 
+# adapted from AI copilot 
+# savedir depending on environment
+if os.environ.get("WEBSITE_SITE_NAME"): # Azure 
+    IMAGE_DIR = "/home/images" 
+else: 
+    IMAGE_DIR = "static/images" # local
 # TODO - anpassen
 
 def get_db():
@@ -73,8 +79,10 @@ def callImageAPI(prompt):
 def call_image_api(prompt):
     # metadaten
     API_KEY = os.getenv("API_KEY_OPEN_AI")
-    print("api key: ", API_KEY)
+
+    # print("api key: ", API_KEY)
     # print("os.environ: ", os.environ)
+
     API_URL = "https://api.openai.com/v1/images/generations"
 
     headers = {
@@ -82,7 +90,6 @@ def call_image_api(prompt):
         "Content-Type": "application/json"
     }
 
-    # TODO - ggf. anpassen + ergänzen
     # Daten, die im request an API gesendet werden
     payload = {
         "model": "dall-e-3",
@@ -166,12 +173,16 @@ def index():
         social_classes=social_classes, species=species, styles=styles, talent_category=talent_category, trait_category=trait_category
         )
 
-# AI
+# adapted from AI
+@app.route("/images/<filename>")
+def serve_image(filename):
+    return send_from_directory(IMAGE_DIR, filename)
+
+# adapted from AI
 @app.route("/api/quirks")
 @login_required
 def api_quirks():
     db = get_db()
-
     rows = db.execute("SELECT * FROM quirks").fetchall()
     return jsonify([dict(row) for row in rows])
 
@@ -262,17 +273,20 @@ def api_savenpc():
                 # dynamic filename 
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 filename = f"{user}_{npc_id}_{timestamp}.png"
-                savedir = "static/images"
-                # query_parameters = {"downloadformat": "png"}
+
+                # adapted from AI copilot 
+
+                os.makedirs(IMAGE_DIR, exist_ok=True) 
+                filepath = os.path.join(IMAGE_DIR, filename)
 
                 response = requests.get(npc["image"])
                 response.status_code
-                # adapted from realpython.com
-                filepath = savedir + "/" + filename
+
                 # TODO - convert zu webp?
                 with open(filepath, mode="wb") as file:
                     file.write(response.content)
-                db.execute("UPDATE npc SET image = ? WHERE user_id = ? AND id = ?;", (filepath, user, npc_id)).fetchall()
+                filepath_save = "/images/" + filename
+                db.execute("UPDATE npc SET image = ? WHERE user_id = ? AND id = ?;", (filepath_save, user, npc_id)).fetchall()
                 db.commit()
 
         except KeyError as e:
