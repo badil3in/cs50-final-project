@@ -628,67 +628,66 @@
                     </div>
                     <div class="accordion-body">
                         <p class="fw-semibold mb-3">For picture creation all NPC-attributes above are needed.</p>
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="btn-group">
-                                <form id="picture-form">
-                                    <div class="container grid-select text-center">
-                                        <div class="d-flex align-items-center mb-3">
-                                            <label class="col-form-label w-50" for="hair">Hair specifics (optional): </label>
-                                            <select id="hair" name="hair" class="form-select" aria-label="Default select example">
-                                                <optgroup label="Hair">
-                                                    <option value="shaggy">shaggy</option>
-                                                    <option value="curly">curly</option>
-                                                    <option value="long">long</option>
-                                                    <option value="short">short</option>
-                                                    <option value="braided">braided</option>
-                                                </optgroup>
-                                                <optgroup>
-                                                    <option value="None" selected>Any</option>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-3">
-                                            <label class="col-form-label w-50" for="skin">Skin specifics (optional): </label>
-                                            <select id="skin" name="skin" class="form-select" aria-label="Default select example">
-                                                <optgroup label="Skin">
-                                                    <option value="pale">pale</option>
-                                                    <option value="taint">taint</option>
-                                                    <option value="dark">dark</option>
-                                                    <option value="blueish">blueish</option>
-                                                    <option value="greenish">greenish</option>
-                                                    <option value="stonelike">stonelike</option>
-                                                </optgroup>
-                                                <optgroup>
-                                                    <option value="None" selected>Any</option>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-3" style="grid-area: 2 / 1 / span 1 / span 2;">
-                                            <label class="col-form-label w-50" for="unique_facial">Unique facial features (optional): </label>
-                                            <select id="unique_facial" name="unique_facial" class="form-select" aria-label="Default select example">
-                                                <optgroup label="Facial features">
-                                                    <option value="a full beard">full beard</option>
-                                                    <option value="a mustache">mustache</option>
-                                                    <option value="scarred Skin">scarred skin</option>
-                                                    <option value="a facial tattoo">facial tattoo</option>
-                                                    <option value="paperskin with visible veins">paperskin with visible veins</option>
-                                                    <option value="dark circles under the eyes">dark circles under the eyes</option>
-                                                    <option value="a sharp, piercing stare">sharp, piercing stare</option>
-                                                    <option value="a prominent, crooked nose">prominent, crooked nose</option>
-                                                    <option value="a gap between the front teeth">gap between the front teeth</option>
-                                                    <option value="stunningly beautiful">stunningly beautiful</option>
-                                                </optgroup>
-                                                <optgroup>
-                                                    <option value="None" selected>Any</option>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                    </div>                  
-                                    <div class="w-100">
-                                        <button id="pic_gen" type="button" class="btn btn-dark">Generate Picture</button>
+                        <div class="btn-group">
+                            <form id="picture-form">
+                                <div class="container grid-select text-center">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label w-50" for="hair">Hair specifics (optional): </label>
+                                        <select id="hair" name="hair" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Hair">
+                                                <option value="shaggy">shaggy</option>
+                                                <option value="curly">curly</option>
+                                                <option value="long">long</option>
+                                                <option value="short">short</option>
+                                                <option value="braided">braided</option>
+                                                <option value="no">bald</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="None" selected>Any</option>
+                                            </optgroup>
+                                        </select>
                                     </div>
-                                </form>
-                            </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label w-50" for="skin">Skin specifics (optional): </label>
+                                        <select id="skin" name="skin" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Skin">
+                                                <option value="pale">pale</option>
+                                                <option value="taint">taint</option>
+                                                <option value="dark">dark</option>
+                                                <option value="blueish">blueish</option>
+                                                <option value="greenish">greenish</option>
+                                                <option value="stonelike">stonelike</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="None" selected>Any</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3" style="grid-area: 2 / 1 / span 1 / span 2;">
+                                        <label class="col-form-label w-50" for="unique_facial">Unique facial features (optional): </label>
+                                        <select id="unique_facial" name="unique_facial" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Facial features">
+                                                <option value="a full beard">full beard</option>
+                                                <option value="a mustache">mustache</option>
+                                                <option value="scarred Skin">scarred skin</option>
+                                                <option value="a facial tattoo">facial tattoo</option>
+                                                <option value="paperskin with visible veins">paperskin with visible veins</option>
+                                                <option value="dark circles under the eyes">dark circles under the eyes</option>
+                                                <option value="a sharp, piercing stare">sharp, piercing stare</option>
+                                                <option value="a prominent, crooked nose">prominent, crooked nose</option>
+                                                <option value="a gap between the front teeth">gap between the front teeth</option>
+                                                <option value="stunningly beautiful">stunningly beautiful</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="None" selected>Any</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>                  
+                                <div class="w-100">
+                                    <button id="pic_gen" type="button" class="btn btn-dark">Generate Picture</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>  

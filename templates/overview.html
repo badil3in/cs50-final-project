@@ -15,7 +15,15 @@
     <div class="accordion-item mb-1">
         <h2 class="accordion-header">
             <button class="accordion-button collapsed" style="flex-direction: column;" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapseOne">
-                <strong>{{ row.name }}</strong> <br> {{ row.race }} | {{ row.gender }} | {{ row.profession }}
+                <div class="d-flex flex-row justify-content-between w-100">
+                    <div class="w-25">
+                        <img class="img-thumbnail" src="{{ row.image }}" alt="">
+                    </div>
+                    <div class="w-50">
+                        <p class="text-center"><strong>{{ row.name }}</strong><br><br>{{ row.race }} | {{ row.gender }} | {{ row.profession }}</p>
+                    </div>
+                    <div class="w-25"></div>
+                </div>
             </button>
         </h2>
         <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">

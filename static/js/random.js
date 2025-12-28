@@ -14,16 +14,19 @@ let origin_generated = false;
 let personality_generated = false;
 let appearance_generated = false;
 
+// collection of all attributes selected in process of creation
 let attributes = {};
 
-// number of needed attributes minus name
+// number of needed attributes
 const N = 18;
 
+// lock closed
 const iconLock = `
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
 <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4M4.5 7A1.5 1.5 0 0 0 3 8.5v5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 11.5 7zM8 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
 </svg>`
 
+// lock open
 const iconUnlock = `
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
   <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
@@ -34,7 +37,8 @@ function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// AI - get element ID in html of selected option = id in db
+// from AI copilot
+// get element ID in html of selected option = id in db
 function getOptionIdByValue(selectedElement, value) {
     const option = Array.from(selectedElement)
                         .find(opt => opt.value === value);
@@ -261,7 +265,7 @@ function basic_generator(event) {
     profOutput.innerHTML = generatedProf[1];
     attributes.prof = Number(generatedProf[0]);
 
-    // basics_generated = true;
+    basics_generated = true;
     // console.log("attributes: ", attributes); 
 }
 
@@ -464,7 +468,12 @@ async function pic_gen(event) {
             // adapted AI code line
 
             document.getElementById("generatedImage").src = result.src;
+            attributes.image = result.src;
             imageContainer.classList.remove('placeholder');
+            alertPlaceholder.innerHTML = `<div class="alert alert-success alert-dismissible" role="alert">
+            <div>Complete!</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`
 
             if (!response.ok) {
                 console.error("Server error:", result);

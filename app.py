@@ -1,7 +1,9 @@
 import os
 import sqlite3
 import requests
+import time
 
+from datetime import datetime
 from flask import Flask, g, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -31,6 +33,7 @@ def promptBuilder(npc):
                       classes.class, environments.environment, environments.env_desc, gender.gender,
                       looks.look, looks.look_desc, professions.profession, regions.region, 
                       regions.region_desc, social_classes.social, social_classes.social_desc, species.race, 
+                      species.race_desc,
                       styles.style, styles.style_desc
                       FROM age_category
                       JOIN attitudes ON attitudes.id = ?
@@ -52,11 +55,12 @@ def promptBuilder(npc):
                       npc["trait1"], npc["trait2"],
                       npc["age"])).fetchall()
     print("rows: ", npc["name"])
-    return (f"A detailed fantasy portrait of {npc["name"]}, a {rows[0]["gender"].lower()}" 
-            f" {rows[0]["race"].lower()}, {rows[0]["age"].lower()} of age, who is a professional"
-            f" {rows[0]["profession"].lower()}. Appearance: has a {rows[0]["bodyshape"].lower()}" 
-            f" bodyshape for a {rows[0]["race"].lower()} - {rows[0]["body_desc"]}. Has a {rows[0]["look"].lower()}" 
-            f" look - {rows[0]["look_desc"]} - with {npc["hair"]} hair, {npc["skin"]} skin and {npc["uniqueFacials"]}."
+    return (f"A realistic fantasy portrait illustration with detailed textures and cinematic lighting of {npc["name"]},"
+            f" who is a {rows[0]["gender"].lower()} {rows[0]["race"].lower()} - a {rows[0]["race_desc"]}. A"
+            f" {rows[0]["age"].lower()} professional {rows[0]["profession"].lower()}. Appearance: has a" 
+            f" {rows[0]["bodyshape"].lower()} bodyshape for a {rows[0]["race"].lower()} - {rows[0]["body_desc"]}." 
+            f" Has a {rows[0]["look"].lower()} look - {rows[0]["look_desc"]} - with {npc["hair"]} hair, {npc["skin"]}" 
+            f" skin and {npc["uniqueFacials"]}."
             f" Is emanating a {rows[0]["attitude"].lower()} attitude - {rows[0]["attitude_desc"].lower()}." 
             f" Dress style: {rows[0]["style"].lower()}, {rows[0]["style_desc"].lower()} with faint"
             f" influences of their {rows[0]["environment"].lower()} and {rows[0]["social"].lower()}"
@@ -224,12 +228,13 @@ def api_savenpc():
             return apology("no data", 400)
         try:
             db = get_db()
-            db.execute("""INSERT INTO npc (
+            cursor = db.cursor()
+            cursor.execute("""INSERT INTO npc (
                        user_id, name, age_id, alignment_id, attitude_id, bodyshape_id, 
                        class_id, environment_id, gender_id, look_id, profession_id,
                        quirk_id, race_id, region_id, social_id, style_id, talent_id, trait1_id, 
                        trait2_id
-                    ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", 
+                    ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""", 
                     (user, 
                     npc["name"], 
                     npc["age"], 
@@ -248,14 +253,35 @@ def api_savenpc():
                     npc["Style"], 
                     npc["talent"],
                     npc["trait1"], 
-                    npc["trait2"]))
+                    npc["trait2"])).fetchall()
+            npc_id = cursor.lastrowid
+            print("npc_id: ", npc_id)
             db.commit() # nur bei Änderungen in der DB
+            # save image
+            if(npc["image"]):
+                # dynamic filename 
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"{user}_{npc_id}_{timestamp}.png"
+                savedir = "static/images"
+                # query_parameters = {"downloadformat": "png"}
+
+                response = requests.get(npc["image"])
+                response.status_code
+                # adapted from realpython.com
+                filepath = savedir + "/" + filename
+                # TODO - convert zu webp?
+                with open(filepath, mode="wb") as file:
+                    file.write(response.content)
+                db.execute("UPDATE npc SET image = ? WHERE user_id = ? AND id = ?;", (filepath, user, npc_id)).fetchall()
+                db.commit()
+
         except KeyError as e:
             print("Key Error:", e)
             return apology("SQL Lite Error", 500)          
         except sqlite3.Error as e:
             print("SQL Lite error:", e)
             return apology("SQL Lite Error", 500)
+        
         
     # return response for JS 
     return jsonify({
@@ -352,7 +378,7 @@ def overview():
 
     user = session.get("user_id")
     rows = db.execute("""
-                      SELECT npc.name, age_category.age, alignments.alignment, attitudes.attitude,
+                      SELECT npc.name, npc.image, age_category.age, alignments.alignment, attitudes.attitude,
                       attitudes.attitude_desc, bodyshape.bodyshape, bodyshape.body_desc,
                       classes.class, environments.environment, environments.env_desc, gender.gender,
                       looks.look, looks.look_desc, professions.profession, quirks.quirk, regions.region, 
