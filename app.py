@@ -1,13 +1,12 @@
 import os
 import sqlite3
 import requests
-import time
 
 from datetime import datetime
 from flask import Flask, g, redirect, render_template, request, session, jsonify, send_from_directory
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from helper import login_required, apology
+from helper import login_required, apology, isInteger
 
 app = Flask(__name__)
 
@@ -22,7 +21,6 @@ if os.environ.get("WEBSITE_SITE_NAME"): # Azure
     IMAGE_DIR = "/home/images" 
 else: 
     IMAGE_DIR = "static/images" # local
-# TODO - anpassen
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -61,36 +59,50 @@ def promptBuilder(npc):
                       npc["trait1"], npc["trait2"],
                       npc["age"])).fetchall()
     print("rows: ", npc["name"])
-    return (f"A realistic fantasy portrait illustration with detailed textures and cinematic lighting of {npc["name"]},"
-            f" who is a {rows[0]["gender"].lower()} {rows[0]["race"].lower()} - a {rows[0]["race_desc"]}. A"
-            f" {rows[0]["age"].lower()} professional {rows[0]["profession"].lower()}. Appearance: has a" 
-            f" {rows[0]["bodyshape"].lower()} bodyshape for a {rows[0]["race"].lower()} - {rows[0]["body_desc"]}." 
-            f" Has a {rows[0]["look"].lower()} look - {rows[0]["look_desc"]} - with {npc["hair"]} hair, {npc["skin"]}" 
-            f" skin and {npc["uniqueFacials"]}."
-            f" Is emanating a {rows[0]["attitude"].lower()} attitude - {rows[0]["attitude_desc"].lower()}." 
-            f" Dress style: {rows[0]["style"].lower()}, {rows[0]["style_desc"].lower()} with faint"
-            f" influences of their {rows[0]["environment"].lower()} and {rows[0]["social"].lower()}"
-            f" origin.")
+
+    if npc["gender"] == 1:
+        pronoun = "She"
+    else:
+        pronoun = "He"
+
+    print("pronoun: ", pronoun)
+    # TODO hair, skin and uniqueFacials conditional
+    prompt = (f"A realistic fantasy portrait illustration with detailed textures and cinematic lighting of {npc["name"]},"
+            f" who is a {rows[0]["gender"].lower()} {rows[0]["race"].lower()} - a {rows[0]["race_desc"]}. {pronoun}"
+            f" is a {rows[0]["age"].lower()} professional {rows[0]["profession"].lower()}. Appearance: {pronoun}")
+    print("prompt 1: ", prompt)
+
+    if npc["hair"] != "None" and npc["hair"] != "bald":
+        prompt += f" has {npc["hair"]} hair,"
+    elif npc["hair"] == "bald":
+        prompt += f" is {npc["hair"],}"
+
+    if npc["skin"] != "None":
+        prompt += f" has {npc["skin"]} skin," 
+
+    if npc["uniqueFacials"] != "None":
+        prompt += f" has {npc["uniqueFacials"]},"
+
+    prompt +=   (f" has a {rows[0]["bodyshape"].lower()} bodyshape for a {rows[0]["race"].lower()} -"
+                f" {rows[0]["body_desc"]}. {pronoun} has a {rows[0]["look"].lower()} look - {rows[0]["look_desc"]}." 
+                f" {pronoun} emanates a {rows[0]["attitude"].lower()} attitude - {rows[0]["attitude_desc"].lower()}."
+                f" Dress style: {rows[0]["style"].lower()}, {rows[0]["style_desc"].lower()} with faint"
+                f" influences of their {rows[0]["environment"].lower()} and {rows[0]["social"].lower()} origin.")
+    
+    print("prompt: ", prompt)
+    return (prompt)
     
 # AI adapted
-def callImageAPI(prompt):
-    return
-
 def call_image_api(prompt):
     # metadaten
     API_KEY = os.getenv("API_KEY_OPEN_AI")
-
-    # print("api key: ", API_KEY)
-    # print("os.environ: ", os.environ)
-
     API_URL = "https://api.openai.com/v1/images/generations"
 
+    # API request
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
     }
-
-    # Daten, die im request an API gesendet werden
     payload = {
         "model": "dall-e-3",
         "prompt": prompt,
@@ -103,24 +115,25 @@ def call_image_api(prompt):
         # check if error ocurred during request by requests method raise_for_status
         response.raise_for_status() 
         data = response.json()
-        print("data: ", data)
+        # print("data: ", data)
+
     except requests.exceptions.HTTPError as e:
-        print("HTTPError: ", e, 
-              "message: ", response.json()["error"]["message"])
+        # print("HTTPError: ", e, 
+        #       "message: ", response.json()["error"]["message"])
         message = response.json()["error"]["message"]
         return message
     except requests.exceptions.RequestException as e:
-        print("RequestException: ", e,
-            "message: ", response.json()["error"]["message"])
-        return
+        # print("RequestException: ", e,
+        #     "message: ", response.json()["error"]["message"])
+        message = response.json()["error"]["message"]
+        return message
 
     # print("response: ", response.status_code)
     # print("data: ", data)
-    # Beispiel: API liefert eine URL zurück
     return data
 
 # AI
-# flask schließt DB Verbindung automatisch wg. decorator 
+# with this decoration flask closes DB connection automaticaly 
 @app.teardown_appcontext
 def close_db(exception):
     db = g.pop("db", None)
@@ -132,7 +145,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-
+# from cs50 problemset 
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
@@ -141,13 +154,13 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# print("hash: ", generate_password_hash("DPK?jxjH4G!kceTF"))
 
 @app.route("/")
 @login_required
 def index():
     db = get_db()
 
+    # db queries for creation form
     age = db.execute("SELECT * FROM age_category;").fetchall()
     alignments = db.execute("SELECT * FROM alignments;").fetchall()
     attitudes = db.execute("SELECT * FROM attitudes;").fetchall()
@@ -165,7 +178,6 @@ def index():
     styles = db.execute("SELECT * FROM styles;").fetchall()
     talent_category = db.execute("SELECT * FROM talent_category;").fetchall()
     trait_category = db.execute("SELECT * FROM trait_category;").fetchall()
-    
 
     return render_template(
         "index.html", alignments=alignments, age=age, attitudes=attitudes, bodyshape=bodyshape, classes=classes, environments=environments,
@@ -174,59 +186,62 @@ def index():
         )
 
 # adapted from AI
+# load image from server directory
 @app.route("/images/<filename>")
 def serve_image(filename):
     return send_from_directory(IMAGE_DIR, filename)
 
-# adapted from AI
+# get quirks from db
 @app.route("/api/quirks")
 @login_required
 def api_quirks():
+    # adapted from AI
     db = get_db()
     rows = db.execute("SELECT * FROM quirks").fetchall()
     return jsonify([dict(row) for row in rows])
 
+# get talents from db
 @app.route("/api/talents")
 @login_required
 def api_talents():
     db = get_db()
-
     rows = db.execute("SELECT * FROM talents").fetchall()
     return jsonify([dict(row) for row in rows])
 
+# get traits from db
 @app.route("/api/traits")
 @login_required
 def api_traits():
     db = get_db()
-
     rows = db.execute("SELECT * FROM traits").fetchall()
     return jsonify([dict(row) for row in rows])
 
+# get regions from db
 @app.route("/api/regions")
 @login_required
 def api_regions():
     db = get_db()
-
     rows = db.execute("SELECT * FROM regions").fetchall()
     return jsonify([dict(row) for row in rows])
 
+# get environments from db
 @app.route("/api/environments")
 @login_required
 def api_environments():
     db = get_db()
-
     rows = db.execute("SELECT * FROM environments").fetchall()
     return jsonify([dict(row) for row in rows])
 
+# get socials from db
 @app.route("/api/socials")
 @login_required
 def api_socials():
     db = get_db()
-
     rows = db.execute("SELECT * FROM social_classes").fetchall()
     print("JSON socials: ", jsonify([dict(row) for row in rows]))
     return jsonify([dict(row) for row in rows])
 
+# save NPC
 @app.route("/api/save_npc", methods=["POST"])
 @login_required
 def api_savenpc():
@@ -234,7 +249,7 @@ def api_savenpc():
     if request.method == "POST":
         user = session.get("user_id")
         npc = request.get_json()
-        print("npc: ", npc)
+        # print("npc: ", npc)
         if not npc:
             return apology("no data", 400)
         try:
@@ -266,42 +281,79 @@ def api_savenpc():
                     npc["trait1"], 
                     npc["trait2"])).fetchall()
             npc_id = cursor.lastrowid
-            print("npc_id: ", npc_id)
+            # print("npc_id: ", npc_id)
             db.commit() # nur bei Änderungen in der DB
+
             # save image
             if(npc["image"]):
                 # dynamic filename 
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 filename = f"{user}_{npc_id}_{timestamp}.png"
 
-                # adapted from AI copilot 
-
+                # line adapted from AI copilot 
+                # create dir if not exists
                 os.makedirs(IMAGE_DIR, exist_ok=True) 
-                filepath = os.path.join(IMAGE_DIR, filename)
 
+                # line adapted from AI copilot 
+                # assemble filpath
+                filepath = os.path.join(IMAGE_DIR, filename)
+                
+                # get image from frontend
                 response = requests.get(npc["image"])
                 response.status_code
 
-                # TODO - convert zu webp?
+                # save image
                 with open(filepath, mode="wb") as file:
                     file.write(response.content)
+
+                # path for db (without main dir)
                 filepath_save = "/images/" + filename
+
+                # add path to db
                 db.execute("UPDATE npc SET image = ? WHERE user_id = ? AND id = ?;", (filepath_save, user, npc_id)).fetchall()
                 db.commit()
-
+        # TODO complete errorhandling
         except KeyError as e:
-            print("Key Error:", e)
+            # print("Key Error:", e)
             return apology("SQL Lite Error", 500)          
         except sqlite3.Error as e:
-            print("SQL Lite error:", e)
+            # print("SQL Lite error:", e)
             return apology("SQL Lite Error", 500)
-        
         
     # return response for JS 
     return jsonify({
         "Status": "success",
         "redirect": "/overview"
     })
+
+# delete NPC
+@app.route("/api/delete_npc", methods=["POST"])
+@login_required
+def delete():
+    if request.method == "POST":
+        try:
+            id = request.get_json()["id"]
+            print("id (delete): ", id)
+
+            if(isInteger(id)):
+                user = session.get("user_id")
+                db = get_db()
+                db.execute("DELETE FROM npc WHERE user_id = ? AND id = ?", (user, id)).fetchall()
+                db.commit()
+
+            return jsonify({
+                "Status": "success",
+                "redirect": "/overview"
+            })
+        # TODO complete errorhandling
+        except TypeError as e:
+            print("delete - TypeError: ", e,
+                  "id: ", id)
+            return
+        except KeyError as e:
+            print("delete - KeyError: ", e)
+            return
+
 
 # image generator - using prompt generator + API request
 @app.route("/generate_image", methods=["POST"])
@@ -311,26 +363,32 @@ def generate_image():
     # adapted from AI 
     if request.method == "POST":
         try:
+            # get data from frontend
             npc = request.get_json()
-            print("npc: ", npc)
+            # print("npc: ", npc)
+
+            # generate prompt
             prompt = promptBuilder(npc) 
+
+            # API request to create image
             image = call_image_api(prompt)
             
-            # return just the b64 image data from JSON as src string    
+            # return json with url 
             return jsonify({
             # adapted AI line
             "src": f"{image['data'][0]['url']}"})
 
+        # TODO complete errorhandling
         except TypeError as e:
-            print("TypeError: ", e,
+            print("gen_img - TypeError: ", e,
                   "image: ", image)
-            return image
+            return 
         except AttributeError as e:
-            print("AttributeError: ", e)
-            return image
+            print("gen_img - AttributeError: ", e)
+            return 
         except KeyError as e:
-            print("KeyError: ", e)
-            return image
+            print("gen_img - KeyError: ", e)
+            return 
 
 
 # from cs50 problemset
@@ -346,22 +404,25 @@ def login():
     if request.method == "POST":
         # Ensure username was submitted
         if not request.form.get("username"):
+            # TODO complete errorhandling
             return apology("must provide username", 400)
 
         # # Ensure password was submitted
         elif not request.form.get("password"):
+            # TODO complete errorhandling
             return apology("must provide password", 400)
 
         # Query database for username
         rows = db.execute(
             "SELECT * FROM users WHERE username = ?", (request.form.get("username"),)
         ).fetchall()
-        print("rows: ", rows)
+        # print("rows: ", rows)
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(
             rows[0]["hash"], request.form.get("password")
         ):
+            # TODO complete errorhandling
             return apology("invalid username and/or password", 400)
 
         # Remember which user has logged in
@@ -385,14 +446,17 @@ def logout():
     # Redirect user to login form
     return redirect("/")
 
+# list of all NPCs created
 @app.route("/overview")
 @login_required
 def overview():
-    db = get_db()
+    # query parameter for previous deletion
+    deleted = request.args.get("deletion")
 
+    db = get_db()
     user = session.get("user_id")
     rows = db.execute("""
-                      SELECT npc.name, npc.image, age_category.age, alignments.alignment, attitudes.attitude,
+                      SELECT npc.id, npc.name, npc.image, age_category.age, alignments.alignment, attitudes.attitude,
                       attitudes.attitude_desc, bodyshape.bodyshape, bodyshape.body_desc,
                       classes.class, environments.environment, environments.env_desc, gender.gender,
                       looks.look, looks.look_desc, professions.profession, quirks.quirk, regions.region, 
@@ -419,7 +483,7 @@ def overview():
                       JOIN traits AS traits2 ON traits2.id = npc.trait2_id
                       WHERE user_id = ?""", 
                       (user,)).fetchall()
-    return render_template("overview.html", data=rows)
+    return render_template("overview.html", data=rows, deletion_success=bool(deleted)) # adapted bool() from AI
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -2,6 +2,8 @@ from flask import redirect, render_template, session
 from functools import wraps
 
 # adapted from cs50 problemset
+# TODO rebuild function
+
 def apology(message, code=400):
     """Render message as an apology to user."""
 
@@ -26,6 +28,13 @@ def apology(message, code=400):
 
     return render_template("apology.html", top=code, bottom=escape(message)), code
 
+def isInteger(id):
+    try:
+        int(id)
+        return True
+    except ValueError:
+        return False
+    
 # from cs50 problemset
 def login_required(f):
     """
