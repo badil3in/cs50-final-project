@@ -154,10 +154,14 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-
 @app.route("/")
 @login_required
 def index():
+    return render_template("index2.html")
+
+@app.route("/creation")
+@login_required
+def creation():
     db = get_db()
 
     # db queries for creation form
@@ -245,7 +249,7 @@ def api_socials():
 @app.route("/api/save_npc", methods=["POST"])
 @login_required
 def api_savenpc():
-
+    print("Route reached")
     if request.method == "POST":
         user = session.get("user_id")
         npc = request.get_json()
@@ -281,11 +285,14 @@ def api_savenpc():
                     npc["trait1"], 
                     npc["trait2"])).fetchall()
             npc_id = cursor.lastrowid
-            # print("npc_id: ", npc_id)
+            print("npc_id: ", npc_id)
             db.commit() # nur bei Änderungen in der DB
+            print("npc: ", npc)
 
             # save image
-            if(npc["image"]):
+            if(npc.get("image")):
+                print("if reached")
+
                 # dynamic filename 
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 filename = f"{user}_{npc_id}_{timestamp}.png"
@@ -312,6 +319,9 @@ def api_savenpc():
                 # add path to db
                 db.execute("UPDATE npc SET image = ? WHERE user_id = ? AND id = ?;", (filepath_save, user, npc_id)).fetchall()
                 db.commit()
+            else:
+                print("else reached")
+
         # TODO complete errorhandling
         except KeyError as e:
             # print("Key Error:", e)
@@ -319,7 +329,7 @@ def api_savenpc():
         except sqlite3.Error as e:
             # print("SQL Lite error:", e)
             return apology("SQL Lite Error", 500)
-        
+    print("return reached")
     # return response for JS 
     return jsonify({
         "Status": "success",

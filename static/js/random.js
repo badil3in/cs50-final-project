@@ -616,7 +616,7 @@ async function saveNPC() {
             console.error("save Error: ", error);
             console.log("save Error: ", error);
             alertPlaceholder.innerHTML = `<div class="alert alert-danger alert-dismissible" role="alert">
-            <div>${err}</div>
+            <div>${error}</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>`;
         }

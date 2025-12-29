@@ -7,7 +7,9 @@
 {% block main %}
 <p class="h5 mb-5">Your NPCs</p>
 
+<!-- conditional deletion success alert -->
 {% if deletion_success %}
+
     <div class="d-flex flex-col p-3" style="margin: auto; width: 70%;">
         <div id="successAlertPlaceholder">
             <div class="alert alert-success alert-dismissible" role="alert">
@@ -16,11 +18,11 @@
             </div>
         </div>
     </div>
+
 {% endif %}
 
 <div class="accordion" id="overview">
 
-        
     {% for row in data %}
 
     <div class="accordion-item mb-1">
@@ -28,141 +30,197 @@
             <button class="accordion-button collapsed" style="flex-direction: column;" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapseOne">
                 <div class="d-flex flex-row justify-content-between w-100">
                     <div class="w-25">
-                        <img class="img-thumbnail" src="{{ row.image }}" alt="">
+                        <img class="img-thumbnail" src="{{ row.image if row.image else '/static/images/default.webp'}}" alt="{{ row.name }}">
                     </div>
-                    <div class="w-50">
+                    <div class="w-50" id="details">
                         <p class="text-center"><strong>{{ row.name }}</strong><br><br>{{ row.race }} | {{ row.gender }} | {{ row.profession }}</p>
                     </div>
                     <div class="w-25"></div>
                 </div>
             </button>
         </h2>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasInfo" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasLabel"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div id="offcanvasBody" class="offcanvas-body"></div>
+        </div>
         <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
             <div class="accordion-body">
                 <div class="overview-container2 gap-3">
-                    <div class="flex-row flex-fill bg-light-subtle border border-light d-flex p-2 w100">
-                        <div class="w-50">
-                            <div class="btn w-100 text-start">
-                                <div class="grid small-font text-start">
-                                    <div>
-                                        Alignment:
-                                    </div>
+                    <div class="w-100">
+                        <img class="img-thumbnail" src="{{ row.image if row.image else '/static/images/default.webp'}}" alt="{{ row.name }}">
+                    </div>
+                    <div class="flex-col flex-fill bg-light-subtle border border-light d-flex py-4 px-6 w50">
+                        <div class="">
+                            <div class="p-2 w-100 text-start">
+                                <div class="small-font text-start">
+                                    Alignment:
                                 </div>
-                                <p> {{ row.alignment }} </p>
+                                <div class="d-flex flex-row ms-2 w-75">
+                                    <div class="text-start" id="alignment" style="width: 90%;">
+                                        {{ row.alignment }}
+                                    </div>
+                                    <div class="text-end" style="width: max-content;">
+                                        <!-- button AI adapted -->
+                                        <button class="btn btn-light p-0" 
+                                                type="button" 
+                                                data-bs-toggle="offcanvas" 
+                                                data-bs-target="#offcanvasInfo" 
+                                                data-type="alignment"
+                                                data-race="{{ row.race }}" 
+                                                data-alignment="{{ row.alignment }}" 
+                                                data-id="{{ row.id }}" 
+                                                aria-controls="offcanvasRight">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square" viewBox="0 0 16 16">
+                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                            </svg>
+                                        </button>
+                                    </div>                                 
+                                </div>
+                            </div>                            
+                        </div>
+                        <div class="">
+                            <div class="p-2 w-100 text-start">
+                                <div class="small-font text-start">
+                                    Age:
+                                </div>
+                                <div class="d-flex flex-row ms-2 w-75">
+                                    <div class="text-start" id="age" style="width: 90%;">
+                                        {{ row.age }}
+                                    </div>
+                                    <div class="text-end" style="width: max-content;">
+                                        <!-- button AI adapted -->
+                                        <button class="btn btn-light p-0" 
+                                                type="button" 
+                                                data-bs-toggle="offcanvas" 
+                                                data-bs-target="#offcanvasInfo" 
+                                                data-id="{{ row.id }}" 
+                                                data-type="age"
+                                                data-alignment="{{ row.alignment }}"
+                                                data-race="{{ row.race }}" 
+                                                aria-controls="offcanvasRight">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square" viewBox="0 0 16 16">
+                                                <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                            </svg>
+                                        </button>
+                                    </div>                                 
+                                </div>
                             </div>
                         </div>
-                        <div class="w-50">
-                            <div class="btn w-100 text-start">
-                                <div class="grid small-font text-start">
-                                    <div>
-                                        Age:
-                                    </div>
+                        <div class="p-2 w-100 text-start">
+                            <div class="small-font text-start">
+                                Class:
+                            </div>
+                            <div class="d-flex flex-row ms-2 w-75">
+                                <div class="text-start" style="width: 90%;">
+                                    {{ row.class }}
                                 </div>
-                                <p> {{ row.age }} </p>
                             </div>
                         </div>
-                        <div class="w-50">
-                            <div class="btn w-100 text-start">
-                                <div class="grid small-font text-start">
-                                    <div>
-                                        Class:
-                                    </div>
+                        <div class="p-2 text-start">
+                            <div class="small-font text-start">
+                                Appearance:
+                            </div>
+                            <div class="d-flex flex-row ms-2 w-75">
+                                <div class="text-start" style="width: 90%;">
+                                    {{ row.bodyshape }} body - {{ row.look }} look - {{ row.attitude }} attitude - {{ row.style }} style 
                                 </div>
-                                <p> {{ row.class }} </p>
                             </div>
                         </div>
                     </div>
                     <div class="flex-col bg-light-subtle border border-light d-flex p-2">
                         <h5 class="small-font">Origin</h5>
                         <div>
-                            <div class="btn w-100 text-start">
-                                <div class="grid small-font text-start">
-                                    <div>
-                                        Social Class:
-                                    </div>
+                            <div class="p-2 w-100 text-start">
+                                <div class="small-font text-start">
+                                    Social Class:
                                 </div>
-                                <p><i>{{ row.social }}</i> - {{ row.social_desc }}</p>
+                                <div class="ms-2 text-start" style="width: 90%;">
+                                    <i>{{ row.social }}</i> - {{ row.social_desc }}
+                                </div>
                             </div>
                         </div>
                         <div>
-                            <div class="btn w-100 text-start">
+                            <div class="p-2 w-100 text-start">
                                 <div class="grid small-font">
                                     <div>
                                         Environment: 
                                     </div>
                                 </div>
-                                <p> 
+                                <div class="ms-2 text-start" style="width: 90%;">
                                     <i>{{ row.environment }}</i> - {{ row.env_desc }}
-                                </p>
+                                </div>
                             </div>
                         </div>
                         <div>
-                            <div class="btn w-100 text-start">
+                            <div class="p-2 w-100 text-start">
                                 <div class="grid small-font">
                                     <div>
                                         Region:
                                     </div>
                                 </div>
-                                <p><i>{{ row.region }}</i> - {{ row.region_desc }}</p>
+                                <div class="ms-2 text-start" style="width: 90%;">
+                                    <i>{{ row.region }}</i> - {{ row.region_desc }}
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="flex-col bg-light-subtle border border-light d-flex p-2">
                         <div>
                             <h5 class="small-font">Personality</h5>
-                            <div class="btn w-100 text-start">
+                            <div class="p-2 w-100 text-start">
                                 <div class="grid small-font text-start">
-                                    <div>
-                                        Traits:
-                                    </div>
+                                    Traits:
                                 </div>
-                                <p><i>{{ row.trait1 }}</i> – {{ row.trait1_desc }}</p>
-                                <p><i>{{ row.trait2 }}</i> – {{ row.trait2_desc }}</p>
+                                <div class="ms-2 text-start" style="width: 90%;">
+                                    <i>{{ row.trait1 }}</i> – {{ row.trait1_desc }}
+                                </div>
+                                <div class="ms-2 mt-1 text-start" style="width: 90%;">
+                                    <i>{{ row.trait2 }}</i> – {{ row.trait2_desc }}
+                                </div>
                             </div>
                         </div>
                         <div>
-                            <div class="btn w-100 text-start">
+                            <div class="p-2 w-100 text-start">
                                 <div class="grid small-font">
-                                    <div>
-                                        Talent: 
-                                    </div>
+                                    Talent: 
                                 </div>
-                                <p> 
+                                <div class="ms-2 text-start" style="width: 90%;">
                                     {{ row.talent }}
-                                </p>
+                                </div>
                             </div>
                         </div>
                         <div>
-                            <div class="btn w-100 text-start">
+                            <div class="p-2 w-100 text-start">
                                 <div class="grid small-font">
-                                    <div>
-                                        Quirk:
-                                    </div>
+                                    Quirk:
                                 </div>
-                                <p>{{ row.quirk }}</p>
+                                <div class="ms-2 text-start" style="width: 90%;">
+                                    {{ row.quirk }}
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="flex-row flex-fill bg-light-subtle border border-light d-flex p-2 w100">
-                        <div class="w-100">
-                            <div class="btn w-100 text-start">
-                                <div class="grid small-font text-start">
-                                    <div>
-                                        Appearance:
-                                    </div>
-                                </div>
-                                <p> 
-                                    {{ row.bodyshape }} body - {{ row.look }} look - {{ row.attitude }} attitude - {{ row.style }} style 
-                                </p>
+                    <div class="flex-col bg-light-subtle border border-light d-flex p-2">
+                        <form class="form-floating">                            
+                            <h5 class="small-font">Notes</h5>
+                            <div class="form-floating">
+                                <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                                <label for="floatingTextarea">Your notes</label>
                             </div>
-                        </div>
+                            <button class="btn btn-dark mt-1" disabled>Save</button>
+                        </form>
                     </div>
                 </div>
                 <div class="d-flex flex-row flex-fill justify-content-center mt-4 p-2 w100">
                     <div class="d-flex flex-col p-3" style="margin: auto; width: 70%;">
                         <div id="deleteAlertPlaceholder"></div>
                     </div>
-                    <button class="btn btn-dark" type="button" name="delete" value="{{ row.id }}" onclick="deleteClicked({{ row.id }} )">Delete {{ row.name }}</button>
+                    <button class="btn btn-dark" type="button" name="delete" value="{{ row.id }}">Delete {{ row.name }}</button>
                 </div>
 
             </div>

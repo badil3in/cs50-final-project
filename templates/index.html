@@ -160,9 +160,7 @@
                         <h5 class="offcanvas-title" id="offcanvasSpeciesLabel">Species</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                       </div>
-                      <div id="species-details" class="offcanvas-body">
-                        ...
-                      </div>
+                      <div id="species-details" class="offcanvas-body"></div>
                     </div>
                 </div>
                 <div class="flex-col bg-light-subtle border border-light d-flex p-2">
@@ -172,8 +170,11 @@
                 <div class="w-100 name-container">
                     <div class="bg-light-subtle border border-light d-flex p-2">
                         <div class="small-font">Name: </div>
-                        <input class="form-control m-2 text-center w-100" id="NPCname" type="text" placeholder="Enter name or select species & gender to generate!">
-                        <div style="width: 30%">
+                        <!-- <div class="form-floating w-100"> -->
+                            <input class="form-control m-2 text-center w-100" id="NPCname" type="text" placeholder="Enter name or select species & gender to generate">
+                            <!-- <label for="NPCname">Enter name or select species & gender to generate</label> -->
+                        <!-- </div> -->
+                        <div style="align-content: center; margin-left: 1rem; width: 30%">
                             <button id="name_gen" type="button" class="btn btn-dark m-2">Generate Name</button>
                         </div>    
                     </div>
