@@ -70,7 +70,7 @@ def promptBuilder(npc):
     prompt = (f"A realistic fantasy portrait illustration with detailed textures and cinematic lighting of {npc["name"]},"
             f" who is a {rows[0]["gender"].lower()} {rows[0]["race"].lower()} - a {rows[0]["race_desc"]}. {pronoun}"
             f" is a {rows[0]["age"].lower()} professional {rows[0]["profession"].lower()}. Appearance: {pronoun}")
-    print("prompt 1: ", prompt)
+    # print("prompt 1: ", prompt)
 
     if npc["hair"] != "None" and npc["hair"] != "bald":
         prompt += f" has {npc["hair"]} hair,"

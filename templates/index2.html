@@ -1,8 +1,25 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Index
+    Home
 {% endblock %}
 
 {% block main %}
+
+
+<div class="container d-flex flex-column justify-content-center align-items-center text-center" style="min-height: 80vh;">
+        
+    <h1 class="display-4 mb-3">RPG Character Generator</h1>
+    
+    <p class="lead text-muted mb-4">
+        Create, manage and explore unique NPCs for your campaigns.
+    </p>
+
+    <div class="d-flex gap-3">
+        <a href="/creation" class="btn btn-dark btn-lg">Create Character</a>
+        <a href="/overview" class="btn btn-outline-secondary btn-lg">Overview</a>
+    </div>
+
+</div>
+
 {% endblock %}

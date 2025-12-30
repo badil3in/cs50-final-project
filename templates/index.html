@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-    <p class="h5 mb-5">Create your NPC</p>
+    <p class="h5 fw-light mb-5">Create your Character</p>
     <!-- TO DO NEW CHARACTER BUTTON -->
     <div class="container-fluid">
         <div class="accordion accordion-flush selection-container" id="accordionFlushExample">
@@ -142,7 +142,7 @@
             <div class="overview-container gap-3">
                 <div>
                 </div>            
-                <div class="d-flex flex-col bg-light-subtle border border-light d-flex p-2">
+                <div class="d-flex flex-col bg-light-subtle border border-light d-flex p-2" id="speciesHighlight">
                     <div class="small-font text-start">Species:</div> 
                     <div class="d-flex flex-row">
                         <div class="ms-4 text-center" style="width: 90%;" id="species_output"> </div>
@@ -163,7 +163,7 @@
                       <div id="species-details" class="offcanvas-body"></div>
                     </div>
                 </div>
-                <div class="flex-col bg-light-subtle border border-light d-flex p-2">
+                <div class="flex-col bg-light-subtle border border-light d-flex p-2" id="genderHighlight">
                     <div class="small-font text-start">Gender: </div>
                     <div class="text-center" id="gender_output"></div>
                 </div>
@@ -407,9 +407,8 @@
             </div>
             <div class="overview-container gap-3">
                 <div class="flex-col bg-light-subtle border border-light d-flex p-2">
-                    <!-- <div class="small-font text-start">Personality: </div> -->
                     <div>
-                        <div class="small-font grid text-start w-100" style="padding-left: 3rem; padding-top: 0.475rem">
+                        <div class="small-font grid text-start w-100" style="padding-left: 2rem; padding-top: 0.475rem">
                             <div>Traits: </div>
                             <div class="svg2">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
@@ -420,13 +419,12 @@
                                 </svg>
                             </div>
                         </div>
-                        <!-- <div class="small-font text-start w-100" style="padding-left: 3rem; padding-top: 0.475rem;">Traits:</div> -->
                         <input type="checkbox" class="btn-check" id="btn-check-5a" autocomplete="off">
-                        <label class="btn w-100 text-start" for="btn-check-5a">
+                        <label class="btn w-100 mt-0 text-start" for="btn-check-5a">
                             <p class="m-0" id="traits_output1"></p>
                         </label>
                         <input type="checkbox" class="btn-check" id="btn-check-5b" autocomplete="off">
-                        <label class="btn w-100 text-start" for="btn-check-5b">
+                        <label class="btn w-100 mt-0 text-start" for="btn-check-5b">
                             <p id="traits_output2"></p>
                         </label>
                     </div>
@@ -695,8 +693,8 @@
             </div>
         </div>
         <div class="overview-container gap-3">
-            <div class="card placeholder-glow">
-                <img id="generatedImage" class="card-img-top" alt="NPC portrait">
+            <div class="card placeholder-glow collapse mx-auto" id="imageWrapper" style="width: 500px; height: 500px;">
+                <img id="generatedImage" class="rounded mx-auto d-block w-100 h-100" alt="Character portrait">
             </div>
             <div d-flex p-2 w-100 id="save-area">
                 <div id="saveAlertPlaceholder"></div>

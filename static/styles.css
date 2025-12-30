@@ -86,13 +86,16 @@ html, body {
 }
 
 .overview-container div label {
-    padding-left: 3rem;
+    padding-left: 2rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
 .overview-container div label p {
-    margin: 0;
+    margin-left: 1rem!important;
+    margin-right: 1rem!important;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .overview-container div div {
@@ -142,4 +145,13 @@ html, body {
 /* Utiliy */
 .small-font {
     font-size: small;
+}
+
+.flash {
+    animation: flash 1.1s ease-out;
+}
+
+@keyframes flash {
+    0%   { outline: auto; }
+    100% { outline: transparent!important; }
 }

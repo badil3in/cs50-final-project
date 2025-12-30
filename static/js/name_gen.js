@@ -35,6 +35,15 @@ fetch("/static/data/name_gen.JSON")
         FIRSTNAMES = data;
     })
 
+function flash(element) {
+    element.classList.add("flash");
+
+    element.addEventListener("animationend", function handler() { 
+        element.classList.remove("flash"); 
+        element.removeEventListener("animationend", handler);
+    })
+};
+
 // function to generate a name output
 function nameGenerator(event) {
     event.preventDefault();
@@ -55,6 +64,12 @@ function nameGenerator(event) {
     
         nameOutput.value = assembleName(nameParts.firstPart, nameParts.secondPart, nameParts.lastnameFirstpart, nameParts.lastnameSecondpart);
     } else {
+        // highlight name species output and gender output
+        const speciesHighlight = document.getElementById('speciesHighlight');
+        const genderHighlight = document.getElementById('genderHighlight');
+        
+        flash(speciesHighlight);
+        flash(genderHighlight);
         console.log("no gender/species")
     }
 }

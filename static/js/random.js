@@ -471,7 +471,7 @@ async function pic_gen(event) {
             attributes.uniqueFacials = uniqueFacials;
         }
 
-        console.log("hair: ", hair, "skin :", skin, "unique: ", uniqueFacials)
+        // console.log("hair: ", hair, "skin :", skin, "unique: ", uniqueFacials)
         // console.log("ELSE attributes (else): ", attributes);
 
         // add name to dict
@@ -479,8 +479,9 @@ async function pic_gen(event) {
 
         try {
             const imageContainer = document.getElementById('generatedImage');
-             
+            const imageWrapper = document.getElementById('imageWrapper');
             // placeholder for meantime until image is done
+            imageWrapper.classList.remove('collapse');
             imageContainer.classList.add('placeholder');
             // fetch image generator route
             const response = await fetch("/generate_image", {
