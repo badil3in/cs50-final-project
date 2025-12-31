@@ -38,7 +38,7 @@ function getRndInteger(min, max) {
 }
 
 // from AI copilot
-// get element ID in html of the selected option = id in db
+// get element ID in html of the selected option (equals id in db)
 function getOptionIdByValue(selectedElement, value) {
     const option = Array.from(selectedElement)
                         .find(opt => opt.value === value);
@@ -46,15 +46,8 @@ function getOptionIdByValue(selectedElement, value) {
 }
 
 // TODO complete reusable lock-function 
-// function btn_check(event, element_locked) {
-//     if (target_element.checked) {
-//         element_locked = true;
-//         this.innerHTML = iconLock;
-//     } else {
-//         element_locked = false;
-//         this.innerHTML = iconUnlock;
-//     }
-//     return element_locked
+// function btn_check() {
+//     return
 // }
 
 // TODO merge with function below
@@ -62,9 +55,10 @@ function getOptionIdByValue(selectedElement, value) {
 function randomizeOption(selected, options) {
     let output;
     if (selected == "Random") {
-        // AI - exclude Random and None
         const exclude = ["Random", "None"];
-        const validOptions = Array.from(options).filter(opt => !exclude.includes(opt.value)); // Ist der Wert nicht in der Ausschlussliste?
+        const validOptions = Array.from(options).filter(opt => !exclude.includes(opt.value));   // AI code - exclude Random and None
+    
+        // debug
         // console.log("validOptions: ", validOptions);
         output = options[getRndInteger(0, validOptions.length - 1)].value;
     } else {
@@ -79,9 +73,9 @@ function randomizeOption2(selectedID, options, nameKey, descKey) {
     let name;
     let description;
     if (selectedID == "Random") {    
-        // AI adapted - exclude Random and None
         const exclude = ["Random", "None"];
-        const validOptions = options.filter(opt => !exclude.includes(opt.value)); // Ist der Wert nicht in der Ausschlussliste?
+        const validOptions = options.filter(opt => !exclude.includes(opt.value));   // AI adapted - exclude Random and None
+
         // get random index and get id, name and desc on that index
         let index = getRndInteger(0, validOptions.length - 1);
         id = options[index].id;
@@ -110,6 +104,8 @@ function randomizeOptionFromCat(selected, cat_options, options, descKey) {
 
     // get random index
     let index = getRndInteger(0, optionsForID.length - 1);
+
+    // debug
     // console.log("selected: ", selected, "index: ", index);
     // console.log("options for id: ", optionsForID);
 
@@ -142,6 +138,8 @@ function randomizeMultipleOptions(selected, cat_options, options, nameKey, descK
         let selectedCatID = getOptionIdByValue(cat_options, selected); 
         optionsForID = optionsForID.filter(item => item.category_id === Number(selectedCatID));
     }
+
+    // debug
     // console.log("trait options: ", options);
     // console.log("optionsForID 3. filtered: ", optionsForID);
 
@@ -158,6 +156,7 @@ function randomizeMultipleOptions(selected, cat_options, options, nameKey, descK
     let output2 = "<i>" + optionsForID[index2][nameKey] + "</i>" + " - " + optionsForID[index2][descKey];
     let id2 = Array.from(options).filter(item => item[nameKey] === optionsForID[index2][nameKey])[0].id;
 
+    // debug
     // console.log("output: ", output1, id1, output2, id2);
 
     return {
@@ -184,6 +183,7 @@ function appearance_generator(event) {
     const attitude_options = document.querySelector('#attitude').options;
     const style_options = document.querySelector('#style').options;
 
+    // debug
     // console.log("body: ", body_options, "look: ", look_options, "attutide: ", attitude_options, "style: ", style_options);
 
     // get output elements
@@ -197,6 +197,8 @@ function appearance_generator(event) {
         let generatedBodyshape = randomizeOption(bodyshape, body_options, bodyOutput).toString().split('|', 2);
         bodyOutput.innerHTML = generatedBodyshape[1];
         attributes.bodyshape = Number(generatedBodyshape[0]);
+
+        // debug
         // console.log("attributes: ", attributes); 
     }
     if (!look_locked) {
@@ -214,7 +216,10 @@ function appearance_generator(event) {
         styleOutput.innerHTML = generatedStyle[1];
         attributes.Style = Number(generatedStyle[0]);
     }
+    
+    // debug
     // console.log("attributes: ", attributes); 
+
     // track that generator has been used
     appearance_generated = true;
 }
@@ -275,6 +280,8 @@ function basic_generator(event) {
 
     // track that the generator has been used
     basics_generated = true;
+
+    // debug
     // console.log("attributes: ", attributes); 
 }
 
@@ -318,6 +325,7 @@ async function background_generator(event) {
     let regionOutput = document.querySelector('#region_output');
     let socialOutput = document.querySelector('#social_output');
 
+    // debug
     // console.log("regionsDesc: ", regions, ", ", regions);
 
     // if not locked call randomize function
@@ -340,7 +348,9 @@ async function background_generator(event) {
         attributes.region = generatedRegion.id;
     }
 
+    // debug
     // console.log("attributes: ", attributes); 
+
     // track that generator has been used
     origin_generated = true;
 
@@ -386,6 +396,7 @@ async function personality_generator(event) {
     const quirks_options = document.querySelector('#quirks').options;
     const traits_options = document.querySelector('#traits').options;
 
+    // debug
     // console.log("traits options: ", traits_options);
     // console.log("traits: ", traits);
 
@@ -396,6 +407,7 @@ async function personality_generator(event) {
 
     // TODO - deal with selection "None"
 
+    // debug
     // console.log("traits output: ", traitsOutput);
     
     // if not locked call randomize function
@@ -420,7 +432,9 @@ async function personality_generator(event) {
         attributes.trait2 = traits_output.id2;
     }
 
+    // debug
     // console.log("attributes: ", attributes); 
+
     // track that generator has been used
     personality_generated = true;
 }
@@ -438,6 +452,7 @@ async function pic_gen(event) {
     // element of alert placeholder
     const alertPlaceholder = document.getElementById('picGenAlertPlaceholder');
 
+    // debug
     // console.log("attributes pic_gen: ", attributes);
     // console.log("length: ", Object.entries(attributes).length);
 
@@ -449,6 +464,8 @@ async function pic_gen(event) {
         <div>Character name missing!</div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
+
+        // debug
         // console.log("1. IF Name missing")
 
     // check by length if attributes dict has all needed entries 
@@ -458,7 +475,6 @@ async function pic_gen(event) {
         <div>Attributes missing!</div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`
-    // 
     } else {
         // add selections to dict
         if(hair) {
@@ -470,7 +486,8 @@ async function pic_gen(event) {
         if(uniqueFacials) {
             attributes.uniqueFacials = uniqueFacials;
         }
-
+    
+        // debug
         // console.log("hair: ", hair, "skin :", skin, "unique: ", uniqueFacials)
         // console.log("ELSE attributes (else): ", attributes);
 
@@ -544,6 +561,8 @@ async function pic_gen(event) {
 // hit save NPC button
 async function saveNPC() {
     let name = document.querySelector('#NPCname').value;
+
+    // debug
     // console.log("name: ", name);
 
     // alert placeholder
@@ -580,12 +599,12 @@ async function saveNPC() {
         <div>Character name missing!</div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`;
-        // console.log("Name missing")
 
     } else {
         // save name to dict
         attributes.name = name;
         
+        // debug
         // console.log("fetch attributes: ", attributes); 
 
         try {

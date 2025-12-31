@@ -28,13 +28,14 @@ function namePartsSelector(species, gender) {
     };
 }
 
-// AI code
+// adapted from AI code
 fetch("/static/data/name_gen.JSON")
     .then(response => response.json())
     .then(data => {
         FIRSTNAMES = data;
     })
 
+// flash animation on element
 function flash(element) {
     element.classList.add("flash");
 
@@ -49,8 +50,6 @@ function nameGenerator(event) {
     event.preventDefault();
     console.log("Click!")
 
-    // const data = new FormData(form);
-    // let gender = data.get('gender');
     let gender = document.getElementById('gender_output').innerHTML;
     let species = document.getElementById('species_output').innerHTML;
     console.log("species: ", species)
@@ -59,7 +58,6 @@ function nameGenerator(event) {
     if(gender && species) {
 
         let nameOutput = document.querySelector('#NPCname');
-        // let species = data.get('species');
         let nameParts = namePartsSelector(species, gender)
     
         nameOutput.value = assembleName(nameParts.firstPart, nameParts.secondPart, nameParts.lastnameFirstpart, nameParts.lastnameSecondpart);

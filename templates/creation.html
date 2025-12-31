@@ -1,0 +1,712 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+    <p class="h5 fw-light mb-5">Create your Character</p>
+    <!-- TO DO NEW CHARACTER BUTTON -->
+    <div class="container-fluid">
+        <div class="accordion accordion-flush selection-container" id="accordionFlushExample">
+            <div>
+                <!-- <h5>Selection</h5> -->
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                    Basics
+                    </button>
+                </h2>
+                <div id="flush-collapseOne" class="accordion-collapse bg-primary-subtle collapse show" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <div class="btn-group">
+                            <form id="basics-form">
+                                <div class="container grid-select">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="race">Species: </label>
+                                        <select id="race" name="race" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Race">
+
+                                                {% for race in species %}
+
+                                                    <option value="{{ race.id }}|{{ race.race }}">{{ race.race }}</option>
+
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="gender">Gender: </label>
+                                        <select id="gender" name="gender" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Gender">
+                                                
+                                                {% for category in gender %}
+
+                                                    <option value="{{ category.id }}|{{ category.gender }}">{{ category.gender }}</option>
+                                            
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="age">Age: </label>
+                                        <select id="age" name="age" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Age">
+
+                                                {% for category in age %}
+
+                                                    <option value="{{ category.id }}|{{ category.age }}">{{ category.age }}</option>
+                                                
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="alignment">Alignment: </label>
+                                        <select id="alignment" name="alignment" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Alignment">
+
+                                                {% for alignment in alignments %}
+
+                                                    <option id="{{ alignment.id }}" value="{{ alignment.id }}|{{ alignment.alignment }}">{{ alignment.alignment }}</option>
+                                                
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="profession">Profession: </label>
+                                        <select id="profession" name="profession" class="form-select" aria-label="Default select example">
+
+                                            {% for category in prof_category %}
+
+                                                <optgroup label="{{ category.name }}">
+
+                                                {% for prof in professions if category.id == prof.category_id %}
+                                                    
+                                                    <option value="{{ prof.id }}|{{ prof.profession }}"> {{ prof.profession }} </option>
+
+                                                {% endfor %}
+                                                
+                                            {% endfor %}
+
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>   
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="class">Class (optional): </label>
+                                        <select id="class" name="class" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Class">
+                                                
+                                                {% for category in classes %}
+                                                    {% if category.id != 0 %}
+
+                                                        <option value="{{ category.id }}|{{ category.class }}">{{ category.class }}</option>
+
+                                                    {% endif %}
+                                            
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="0|None" selected>None</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button id="basic-gen-button" class="btn btn-dark" type="submit">Generate & use</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overview-container gap-3">
+                <div>
+                </div>            
+                <div class="d-flex flex-col bg-light-subtle border border-light d-flex p-2" id="speciesHighlight">
+                    <div class="small-font text-start">Species:</div> 
+                    <div class="d-flex flex-row">
+                        <div class="ms-4 text-center" style="width: 90%;" id="species_output"> </div>
+                        <div class="text-end" style="width: max-content;">
+                            <button class="btn btn-light p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSpecies" aria-controls="offcanvasRight">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                  </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSpecies" aria-labelledby="offcanvasRightLabel">
+                      <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasSpeciesLabel">Species</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                      </div>
+                      <div id="species-details" class="offcanvas-body"></div>
+                    </div>
+                </div>
+                <div class="flex-col bg-light-subtle border border-light d-flex p-2" id="genderHighlight">
+                    <div class="small-font text-start">Gender: </div>
+                    <div class="text-center" id="gender_output"></div>
+                </div>
+                <div class="w-100 name-container">
+                    <div class="bg-light-subtle border border-light d-flex p-2">
+                        <div class="small-font">Name: </div>
+                        <!-- <div class="form-floating w-100"> -->
+                            <input class="form-control m-2 text-center w-100" id="NPCname" type="text" placeholder="Enter name or select species & gender to generate">
+                            <!-- <label for="NPCname">Enter name or select species & gender to generate</label> -->
+                        <!-- </div> -->
+                        <div style="align-content: center; margin-left: 1rem; width: 30%">
+                            <button id="name_gen" type="button" class="btn btn-dark m-2">Generate Name</button>
+                        </div>    
+                    </div>
+                </div>
+                <div class="flex-col bg-light-subtle border border-light d-flex p-2">
+                    <div class="small-font text-start">Age: </div>
+                    <div class="text-center" id="age_output"></div>    
+                </div>
+                <div class="flex-col bg-light-subtle border border-light d-flex p-2">
+                    <div class="small-font text-start">Alignment: </div>
+                    <div class="d-flex flex-row">
+                        <div class="ms-4 text-center" id="alignment_output" style="width: 90%;"></div>
+                        <div class="text-end" style="width: max-content;">
+                            <button class="btn btn-light p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAlignment" aria-controls="offcanvasRight">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-square" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAlignment" aria-labelledby="offcanvasRightLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasAlignmentLabel">Alignment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div id="alignment-details" class="offcanvas-body">
+                        ...
+                    </div>
+                </div>
+                <div class="flex-col bg-light-subtle border border-light d-flex p-2">                
+                    <div class="small-font text-start">Profession: </div>
+                    <div class="text-center" id="profession_output"></div>
+                </div>
+                <div class="flex-col bg-light-subtle border border-light d-flex p-2">
+                    <div class="small-font text-start">Class: </div>
+                    <div class="text-center" id="class_output"></div>
+                </div>
+            </div>
+            <div class="accordion-item my-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                    Origin
+                    </button>
+                </h2>
+                <div id="flush-collapseThree" class="accordion-collapse bg-primary-subtle collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <div class="btn-group">
+                            <form id="background-form">
+                                <div class="container grid-select text-center"> 
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="social_class">Social Class: </label>
+                                        <select id="social_class" name="social_class" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Social Class:">
+
+                                                {% for social in social_classes %}
+
+                                                    <option value="{{ social.id }}|{{ social.social }}">{{ social.social }}</option>
+
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="environments">Environment: </label>
+                                        <select id="environments" name="environments" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Environment:">
+
+                                                {% for environment in environments %}
+
+                                                    <option value="{{ environment.id }}|{{ environment.environment }}">{{ environment.environment }}</option>
+
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div> <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="regions">Region: </label>
+                                        <select id="regions" name="regions" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Region:">
+
+                                                {% for region in regions %}
+
+                                                    <option value="{{ region.id }}|{{ region.region }}">{{ region.region }}</option>
+
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button id="bg-gen-button" class="btn btn-dark" type="submit">Generate & use</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overview-container gap-3">
+                <div class="flex-col bg-light-subtle border border-light d-flex p-2">
+                    <!-- <div class="small-font text-start">Origin: </div> -->
+                    <div>
+                        <input type="checkbox" class="btn-check" id="btn-check-2a" autocomplete="off">
+                        <label class="btn w-100 text-start" for="btn-check-2a">
+                            <div class="grid small-font text-start">
+                                <div>
+                                    Social Class:
+                                </div>
+                                <div class="svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                    </svg>    
+                                </div>
+                            </div>
+                            <p id="social_output"></p>
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="btn-check w-100" id="btn-check-2b" autocomplete="off">
+                        <label class="btn w-100 text-start" for="btn-check-2b">
+                            <div class="grid small-font">
+                                <div>
+                                    Environment:
+                                </div>
+                                <div class="svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="environment_output"></p>
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="btn-check" id="btn-check-2c" autocomplete="off">
+                        <label class="btn w-100 text-start" for="btn-check-2c">
+                            <div class="grid small-font">
+                                <div>
+                                    Region:
+                                </div>
+                                <div class="svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="region_output"></p>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item my-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
+                    Personality
+                    </button>
+                </h2>
+                <div id="flush-collapseFour" class="accordion-collapse bg-primary-subtle collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <div class="btn-group">
+                            <form id="personality-form">
+                                <div class="container grid-select text-center">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="traits">Traits: </label>
+                                        <select id="traits" name="traits" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Trait category:">
+
+                                                {% for trait in trait_category %}
+
+                                                    <option id="{{ trait.id }}" value="{{ trait.name }}">{{ trait.name }}</option>
+
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="age">Talents: </label>
+                                        <select id="talents" name="talents" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Talent category:">
+
+                                                {% for talent in talent_category %}
+
+                                                    <option id="{{ talent.id }}" value="{{ talent.name }}"> {{ talent.name}} - {{ talent.description }}</option>
+
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="quirks">Quirks: </label>
+                                        <select id="quirks" name="quirks" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Quirk category:">
+
+                                                {% for quirk in quirk_category %}
+                                                 
+                                                    <option id="{{ quirk.id }}" value="{{ quirk.name }}"> {{ quirk.name }} </option>
+                                                     
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button id="personality-gen-button" class="btn btn-dark" type="submit">Generate & use</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overview-container gap-3">
+                <div class="flex-col bg-light-subtle border border-light d-flex p-2">
+                    <div>
+                        <div class="small-font grid text-start w-100" style="padding-left: 2rem; padding-top: 0.475rem">
+                            <div>Traits: </div>
+                            <div class="svg2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="btn-check" id="btn-check-5a" autocomplete="off">
+                        <label class="btn w-100 mt-0 text-start" for="btn-check-5a">
+                            <p class="m-0" id="traits_output1"></p>
+                        </label>
+                        <input type="checkbox" class="btn-check" id="btn-check-5b" autocomplete="off">
+                        <label class="btn w-100 mt-0 text-start" for="btn-check-5b">
+                            <p id="traits_output2"></p>
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="btn-check w-100" id="btn-check-4" autocomplete="off">
+                        <label class="btn w-100 text-start" for="btn-check-4">
+                            <div class="grid small-font">
+                                <div>Talent:</div>
+                                <div class="svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="talents_output"></p> 
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="btn-check" id="btn-check-3" autocomplete="off">
+                        <label class="btn w-100 text-start" for="btn-check-3">
+                            <div class="grid small-font">
+                                <div>
+                                    Quirk:
+                                </div>
+                                <div class="svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="quirks_output"></p> 
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item my-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                    Appearance
+                    </button>
+                </h2>
+                <div id="flush-collapseTwo" class="accordion-collapse bg-primary-subtle collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <div class="btn-group">
+                            <form id="appearance-form">
+                                <div class="container grid-select text-center">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="bodyshape">Bodyshape: </label>
+                                        <select id="bodyshape" name="bodyshape" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Bodyshape">
+                                                
+                                                {% for shape in bodyshape %}
+
+                                                    <option value="{{ shape.id}}|{{ shape.bodyshape }} - {{ shape.body_desc }}">{{ shape.bodyshape }}</option>
+                                            
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="look">Look: </label>
+                                        <select id="look" name="look" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Look">
+
+                                                {% for look in looks %}
+
+                                                    <option value="{{ look.id }}|{{ look.look }} - {{ look.look_desc }}">{{ look.look }}</option>
+                                            
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random:</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="attitude">Attitude: </label>
+                                        <select id="attitude" name="attitude" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Attitude">
+
+                                                {% for attitude in attitudes %}
+
+                                                    <option value="{{ attitude.id }}|{{ attitude.attitude }} - {{ attitude.attitude_desc }}">{{ attitude.attitude }}</option>
+                                            
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div> 
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label" for="style">Style: </label>
+                                        <select id="style" name="style" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Style">
+
+                                                {% for style in styles %}
+
+                                                    <option value="{{ style.id}}|{{ style.style }} - {{ style.style_desc }}">{{ style.style }}</option>
+                                            
+                                                {% endfor %}
+
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="Random" selected>Random</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button id="appearance-gen-button" class="btn btn-dark" type="submit" >Generate & use</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overview-container gap-3">
+                <div class="flex-col bg-light-subtle border border-light d-flex p-2" id="appearance">
+                    <!-- <div class="small-font text-start">Appearance: </div> -->
+                    <div>
+                        <input type="checkbox" class="btn-check" id="btn-check-1a" autocomplete="off">
+                        <label class="btn w-100 text-start" for="btn-check-1a">
+                            <div class="grid small-font">
+                                <div>
+                                    Bodyshape:
+                                </div>
+                                <div class="svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="bodyshape_output"></p>
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="btn-check w-100" id="btn-check-1b" autocomplete="off">
+                        <label class="btn w-100 text-start" for="btn-check-1b">
+                            <div class="grid small-font">
+                                <div>
+                                    Look:
+                                </div>
+                                <div class="svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="look_output"></p> 
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="btn-check" id="btn-check-1c" autocomplete="off">
+                        <label class="btn w-100 text-start" for="btn-check-1c">
+                            <div class="grid small-font">
+                                <div>
+                                    Attitude:
+                                </div>
+                                <div class="svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="attitude_output"></p> 
+                        </label>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="btn-check" id="btn-check-1d" autocomplete="off">
+                        <label class="btn w-100 text-start" for="btn-check-1d">
+                            <div class="grid small-font">
+                                <div>
+                                    Style:
+                                </div>
+                                <div class="svg">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 0a4 4 0 0 1 4 4v2.5h-1V4a3 3 0 1 0-6 0v2h.5A2.5 2.5 0 0 1 12 8.5v5A2.5 2.5 0 0 1 9.5 16h-7A2.5 2.5 0 0 1 0 13.5v-5A2.5 2.5 0 0 1 2.5 6H8V4a4 4 0 0 1 4-4M2.5 7A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 9.5 7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p id="style_output"></p> 
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item my-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
+                    Picture
+                    </button>
+                </h2>
+                <div id="flush-collapseFive" class="accordion-collapse bg-primary-subtle collapse" data-bs-parent="#accordionFlushExample">
+                    <div class="d-flex flex-col p-3" style="margin: auto; width: 70%;">
+                        <div id="picGenAlertPlaceholder"></div>
+                    </div>
+                    <div class="accordion-body">
+                        <p class="fw-semibold mb-3">For picture creation all NPC-attributes above are needed.</p>
+                        <div class="btn-group">
+                            <form id="picture-form">
+                                <div class="container grid-select text-center">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label w-50" for="hair">Hair specifics (optional): </label>
+                                        <select id="hair" name="hair" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Hair">
+                                                <option value="shaggy">shaggy</option>
+                                                <option value="curly">curly</option>
+                                                <option value="long">long</option>
+                                                <option value="short">short</option>
+                                                <option value="braided">braided</option>
+                                                <option value="no">bald</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="None" selected>Any</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <label class="col-form-label w-50" for="skin">Skin specifics (optional): </label>
+                                        <select id="skin" name="skin" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Skin">
+                                                <option value="pale">pale</option>
+                                                <option value="taint">taint</option>
+                                                <option value="dark">dark</option>
+                                                <option value="blueish">blueish</option>
+                                                <option value="greenish">greenish</option>
+                                                <option value="stonelike">stonelike</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="None" selected>Any</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3" style="grid-area: 2 / 1 / span 1 / span 2;">
+                                        <label class="col-form-label w-50" for="unique_facial">Unique facial features (optional): </label>
+                                        <select id="unique_facial" name="unique_facial" class="form-select" aria-label="Default select example">
+                                            <optgroup label="Facial features">
+                                                <option value="a full beard">a full beard</option>
+                                                <option value="a mustache">a mustache</option>
+                                                <option value="scarred Skin">scarred skin</option>
+                                                <option value="a facial tattoo">a facial tattoo</option>
+                                                <option value="paperskin with visible veins">paperskin with visible veins</option>
+                                                <option value="dark circles under the eyes">dark circles under the eyes</option>
+                                                <option value="a sharp, piercing stare">a sharp, piercing stare</option>
+                                                <option value="a prominent, crooked nose">a prominent, crooked nose</option>
+                                                <option value="a gap between the front teeth">a gap between the front teeth</option>
+                                                <option value="stunningly beautiful">is stunningly beautiful</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value="None" selected>Any</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>                  
+                                <div class="w-100">
+                                    <button id="pic_gen" type="button" class="btn btn-dark">Generate Picture</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+        <div class="overview-container gap-3">
+            <div class="card placeholder-glow collapse mx-auto" id="imageWrapper" style="width: 500px; height: 500px;">
+                <img id="generatedImage" class="rounded mx-auto d-block w-100 h-100" alt="Character portrait">
+            </div>
+            <div d-flex p-2 w-100 id="save-area">
+                <div id="saveAlertPlaceholder"></div>
+                <p>Select or generate all attributes first to save your NPC.</p>
+                <button class="btn btn-dark" id="save-char-button" onclick="saveNPC()" type="button">Save Character</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    
+    <script src="/static/js/name_gen.js"></script>
+    <script src="/static/js/random.js"></script>
+
+{% endblock %}

@@ -132,7 +132,7 @@ def call_image_api(prompt):
     # print("data: ", data)
     return data
 
-# AI
+# AI code
 # with this decoration flask closes DB connection automaticaly 
 @app.teardown_appcontext
 def close_db(exception):
@@ -157,7 +157,7 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    return render_template("index2.html")
+    return render_template("index.html")
 
 @app.route("/creation")
 @login_required
@@ -184,7 +184,7 @@ def creation():
     trait_category = db.execute("SELECT * FROM trait_category;").fetchall()
 
     return render_template(
-        "index.html", alignments=alignments, age=age, attitudes=attitudes, bodyshape=bodyshape, classes=classes, environments=environments,
+        "creation.html", alignments=alignments, age=age, attitudes=attitudes, bodyshape=bodyshape, classes=classes, environments=environments,
         gender=gender, looks=looks, professions=professions, prof_category=prof_category, quirk_category=quirk_category, regions=regions, 
         social_classes=social_classes, species=species, styles=styles, talent_category=talent_category, trait_category=trait_category
         )

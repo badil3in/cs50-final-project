@@ -117,10 +117,6 @@ html, body {
     margin: auto;
 }
 
-/* .overview-container2 > :first-child {
-    grid-area: header;
-} */
-
 .overview-container2 > :last-child {
     grid-area: footer;
 }
